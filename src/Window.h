@@ -17,4 +17,4 @@ class Window {
 
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
-}
+};
