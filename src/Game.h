@@ -3,7 +3,7 @@
 
 class Game {
 public:
-    Game();
+    Game(int width, int height, const char* title);
     ~Game();
 
     void run();
