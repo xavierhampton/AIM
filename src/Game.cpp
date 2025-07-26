@@ -26,6 +26,50 @@ Game::Game(int width, int height, const char* title) {
         std::cerr << "Failed to initialize window." << std::endl;
         exit(EXIT_FAILURE);
     }
+
+       float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+    }; 
+
+    //Generate a Vertex Array Object (VAO) and bind it
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    //Generate a buffer and bind it to the GL_ARRAY_BUFFER target
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //Compile and link the vertex shader
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    glCompileShader(vertexShader);
+
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    glCompileShader(fragmentShader);
+
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glUseProgram(shaderProgram);
+
+    //Delete the shaders as they're no longer needed
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    //Set up vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
 }
 
 Game::~Game() {
@@ -42,26 +86,6 @@ void Game::run() {
 }
 
 void Game::update() {
-    float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
-    }; 
-
-    //Generate and bind a Vertex Buffer Object (VBO)
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    //Compile and link the vertex shader
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-
-
-    
     
 }
 
