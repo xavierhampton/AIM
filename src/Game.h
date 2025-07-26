@@ -10,6 +10,12 @@ public:
 
 private:
     Window* window;
+    
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int fragmentShader;
+    unsigned int vertexShader;
+    unsigned int shaderProgram;
 
     void update();
     void render();
