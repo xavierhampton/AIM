@@ -47,16 +47,16 @@ Game::Game(int width, int height, const char* title) {
     glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(vertexShader);
 
+    //Compile and link the fragment shader
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
     glCompileShader(fragmentShader);
 
+    //Create a shader program and link the shaders
     shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
-
-    glUseProgram(shaderProgram);
 
     //Delete the shaders as they're no longer needed
     glDeleteShader(vertexShader);
@@ -65,11 +65,6 @@ Game::Game(int width, int height, const char* title) {
     //Set up vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
 }
 
 Game::~Game() {
@@ -90,6 +85,11 @@ void Game::update() {
 }
 
 void Game::render() {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);     // Activate the shader
+    glBindVertexArray(VAO);          // Bind the VAO with triangle data
+    glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices (1 triangle)
+
 }
