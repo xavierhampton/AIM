@@ -6,6 +6,7 @@ set(SOURCES
     src/main.cpp
     src/Game.cpp
     src/Window.cpp
+    src/Shader.cpp
     libs/glad/src/glad.c
 )
 

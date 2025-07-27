@@ -3,12 +3,14 @@
 #include <iostream>
 #include <math.h>
 
-Game::Game(int width, int height, const char* title) : ourShader("shaders/shader.vs", "shaders/shader.fs") {
+Game::Game(int width, int height, const char* title)  {
     window = new Window(width, height, title);
     if (!window->isInitialized()) {
         std::cerr << "Failed to initialize window." << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    ourShader = Shader("../shaders/shader.vs", "../shaders/shader.fs");
 
        float vertices[] = {
     // positions         // colors

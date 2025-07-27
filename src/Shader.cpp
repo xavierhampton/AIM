@@ -1,4 +1,6 @@
 #include "Shader.h"
+
+Shader::Shader() {};
 Shader::Shader(const char* vertexPath, const char* fragmentPath) 
 {
     std::string vertexCode;
@@ -28,7 +30,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         fragmentCode = fShaderStream.str();
 
     } catch (std::ifstream::failure& e) {
-        std::cerr << "ERROR::SHADER::FILE_NOT_READ" << std::endl;
+        std::cerr << "ERROR::SHADER::FILE_NOT_READ" << e.what() << std::endl;
     }
 
     const char* vShaderCode = vertexCode.c_str();
