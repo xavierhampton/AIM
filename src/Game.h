@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "Shader.h"
 
 class Game {
 public:
@@ -13,9 +14,7 @@ private:
     
     unsigned int VBO;
     unsigned int VAO;
-    unsigned int fragmentShader;
-    unsigned int vertexShader;
-    unsigned int shaderProgram;
+    Shader ourShader;
 
     void update();
     void render();

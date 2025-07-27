@@ -3,7 +3,7 @@
 #include <iostream>
 #include <math.h>
 
-Game::Game(int width, int height, const char* title) {
+Game::Game(int width, int height, const char* title) : ourShader("shaders/shader.vs", "shaders/shader.fs") {
     window = new Window(width, height, title);
     if (!window->isInitialized()) {
         std::cerr << "Failed to initialize window." << std::endl;
@@ -26,27 +26,7 @@ Game::Game(int width, int height, const char* title) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //Compile and link the vertex shader
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
 
-    //Compile and link the fragment shader
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
-    //Create a shader program and link the shaders
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    //Delete the shaders as they're no longer needed
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    //Set up vertex attributes
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -71,15 +51,14 @@ void Game::run() {
 void Game::update() {
     float timeValue = glfwGetTime();
     float greenValue = (sin(timeValue) / 2.0f) + 0.5f; // Oscillate between 0 and 1
-    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-    glUseProgram(shaderProgram); // Activate the shader program
-    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // Set the color
+    ourShader.setFloat("ourColor", greenValue);
 }
 
 void Game::render() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    ourShader.use(); // Use the shader program
     glBindVertexArray(VAO);          // Bind the VAO with triangle data
     glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices (1 triangle)
 
