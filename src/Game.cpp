@@ -53,7 +53,7 @@ void Game::run() {
 void Game::update() {
     float timeValue = glfwGetTime();
     float greenValue = (sin(timeValue) / 2.0f) + 0.5f; // Oscillate between 0 and 1
-    ourShader.setFloat("ourColor", greenValue);
+    ourShader.setFloat("greenColor", greenValue);
 }
 
 void Game::render() {

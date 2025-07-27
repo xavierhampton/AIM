@@ -19,7 +19,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         std::stringstream vShaderStream, fShaderStream;
 
         //Read file's buffer contents into streams
-
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();
 
