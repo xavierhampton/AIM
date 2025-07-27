@@ -1,26 +1,25 @@
 #include "Game.h"
 #include <glad/glad.h>
 #include <iostream>
+#include <math.h>
 
 //TEMP STORAGE
 
 //This is the source code for the vertex shader
 const char*vertexShaderSource = "#version 330 core\n"
 "layout(location = 0) in vec3 aPos;\n"
-"out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
 "    gl_Position = vec4(aPos.x,aPos.y, aPos.z, 1.0);\n"
-"    vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f);\n"
 "}\0";
 
 //This is the source code for the fragment shader
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
-"in vec4 vertexColor;\n"
+"uniform vec4 ourColor;\n"
 "void main()\n"
 "{\n"
-"    FragColor = vertexColor;\n"
+"    FragColor = ourColor;\n"
 "}\0";
 
 Game::Game(int width, int height, const char* title) {
@@ -84,14 +83,17 @@ void Game::run() {
 }
 
 void Game::update() {
-    
+    float timeValue = glfwGetTime();
+    float greenValue = (sin(timeValue) / 2.0f) + 0.5f; // Oscillate between 0 and 1
+    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+    glUseProgram(shaderProgram); // Activate the shader program
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // Set the color
 }
 
 void Game::render() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(shaderProgram);     // Activate the shader
     glBindVertexArray(VAO);          // Bind the VAO with triangle data
     glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices (1 triangle)
 
