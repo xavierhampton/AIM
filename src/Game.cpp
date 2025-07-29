@@ -23,8 +23,8 @@ float vertices[] = {
 };
 
     //Texture Code
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+    int t_width, t_height, nrChannels;
+    unsigned char *data = stbi_load("container.jpg", &t_width, &t_height, &nrChannels, 0);
 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -61,6 +61,8 @@ float vertices[] = {
     // Texture coordinate attribute
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    std::cout << "Game initialized successfully." << std::endl;
 }
 
 Game::~Game() {
@@ -77,9 +79,7 @@ void Game::run() {
 }
 
 void Game::update() {
-    float timeValue = glfwGetTime();
-    float greenValue = (sin(timeValue) / 2.0f) + 0.5f; // Oscillate between 0 and 1
-    ourShader.setFloat("greenColor", greenValue);
+    
 }
 
 void Game::render() {
@@ -87,7 +87,7 @@ void Game::render() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     ourShader.use(); // Use the shader program
+    glBindTexture(GL_TEXTURE_2D, texture); // Bind the texture
     glBindVertexArray(VAO);          // Bind the VAO with triangle data
-    glDrawArrays(GL_TRIANGLES, 0, 3); // Draw 3 vertices (1 triangle)
-
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
