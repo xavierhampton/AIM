@@ -1,7 +1,4 @@
 #pragma once
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "stb_image.h"
 #include "Window.h"
 #include "Shader.h"
 
@@ -17,6 +14,7 @@ private:
     
     unsigned int VBO;
     unsigned int VAO;
+    unsigned int texture;
     Shader ourShader;
 
     void update();
