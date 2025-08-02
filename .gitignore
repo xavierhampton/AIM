@@ -1,20 +1,72 @@
-*.a
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
 *.lib
-*.so
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
 *.dll
+*.so
+*.so.*
 *.dylib
 
-*.o
-*.obj
-
+# Executables
 *.exe
-a.out
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
 
-build/
-libs/
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
 
-.vs/
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Visual Studio files
+[Dd]ebug/
+[Dd]ebug.DLL/
+[R]elease/
+[Rr]elease.DLL/
 *.user
-*.suo
-*.VC.opendb
-*.qmake.cache
+*.aps
+.vs
+
+# Clangd LSP
+.cache
+compile_commands.json
+
+# Build folder
+[Bb]uild
+
+# Android
+*apk*
+android.*
