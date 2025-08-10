@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24...3.30)
+cmake_minimum_required(VERSION 3.5)
 project(raylib-game-template)
 
 include(FetchContent)
