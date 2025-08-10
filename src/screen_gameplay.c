@@ -10,13 +10,15 @@
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 static Camera camera = { 0 };
-static int finishScreen = 0; // Flag to indicate if the gameplay screen should finish
+Texture2D gridTexture;
+static int finishScreen = 0; 
+
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
 void DrawCrosshair(void);
-void DrawPlaneFlooring(void);
+void DrawMap(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -26,6 +28,8 @@ void InitGameplayScreen(void)
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera.fovy = 60.0f;
     camera.projection = CAMERA_PERSPECTIVE;
+
+    gridTexture = LoadTexture("src/resources/texture1.png");
 
     DisableCursor();
     SetTargetFPS(300);              
@@ -48,13 +52,14 @@ void UpdateGameplayScreen(void)
 // Gameplay Screen Draw logic
 void DrawGameplayScreen(void)
 {
-    DrawPlaneFlooring();
+    DrawMap();
     DrawCrosshair();
 }
 
 // Gameplay Screen Unload logic
 void UnloadGameplayScreen(void)
 {
+    UnloadTexture(gridTexture); // Unload grid texture
     // TODO: Unload GAMEPLAY screen variables here!
 }
 
@@ -78,17 +83,29 @@ void DrawCrosshair(void)
     DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, RED); // vertical bar
 }
 
-void DrawPlaneFlooring(void)
+void DrawGridPlane(Vector3 position, Vector2 size, float rotationXDegrees)
+{
+    Vector2 texSize = { size.x * 2, size.y * 2 };
+    Vector2 texCoord = { 0, 0 };
+
+    // Draw the grid texture
+    Mesh planeMesh = GenMeshPlane(32.0f, 32.0f, 1, 1);
+    Model gridModel = LoadModelFromMesh(planeMesh);
+
+    gridModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = gridTexture;
+    gridModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].value = 8.0f; 
+    DrawModel(gridModel, position, 1.0f, WHITE);
+
+    UnloadModel(gridModel);
+
+}
+
+void DrawMap(void)
 {
     BeginMode3D(camera);
-    // Draw the plane flooring
-    DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, (Color){10, 10, 10, 255});
-    float gridSize = 32.0f;
-    float gridStep = 2.0f; // spacing between grid lines
-    for (float i = -gridSize/2; i <= gridSize/2; i += gridStep)
-    {
-        DrawLine3D((Vector3){-gridSize/2, 0.01f, i}, (Vector3){gridSize/2, 0.01f, i}, (Color){255, 255, 255, 100});
-        DrawLine3D((Vector3){i, 0.01f, -gridSize/2}, (Vector3){i, 0.01f, gridSize/2}, (Color){255, 255, 255, 100});
-    }
+
+    // Draw the grid
+    DrawGridPlane((Vector3){0, 0, 0}, (Vector2){32.0f, 32.0f}, 0);
+
     EndMode3D();
 }
