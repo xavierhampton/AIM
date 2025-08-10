@@ -37,11 +37,6 @@ static int framesCounter = 0;
 static int finishScreen = 0;
 static Camera camera = { 0 };
 
-
-static float heights[MAX_COLUMNS] = { 0 };
-static Vector3 positions[MAX_COLUMNS] = { 0 };
-static Color colors[MAX_COLUMNS] = { 0 };
-
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
@@ -59,15 +54,8 @@ void InitGameplayScreen(void)
     camera.fovy = 60.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
-    for (int i = 0; i < MAX_COLUMNS; i++)
-    {
-        heights[i] = (float)GetRandomValue(1, 12);
-        positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f, (float)GetRandomValue(-15, 15) };
-        colors[i] = (Color){ GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255 };
-    }
-
     DisableCursor();
-    SetTargetFPS(60);              
+    SetTargetFPS(300);              
     
 }
 
@@ -92,19 +80,26 @@ void DrawGameplayScreen(void)
   
     BeginMode3D(camera);
 
-    DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY); // Draw ground
-                DrawCube((Vector3){ -16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, BLUE);     // Draw a blue wall
-                DrawCube((Vector3){ 16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, LIME);      // Draw a green wall
-                DrawCube((Vector3){ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
+    //Black grid flooring
+    DrawPlane((Vector3){0.0f, 0.0f, 0.0f}, (Vector2){32.0f, 32.0f}, (Color){10, 10, 10, 255});
+    float gridSize = 32.0f;
+    float gridStep = 2.0f; // spacing between grid lines
+    for (float i = -gridSize/2; i <= gridSize/2; i += gridStep)
+    {
+        DrawLine3D((Vector3){-gridSize/2, 0.01f, i}, (Vector3){gridSize/2, 0.01f, i}, (Color){255, 255, 255, 100});
+        DrawLine3D((Vector3){i, 0.01f, -gridSize/2}, (Vector3){i, 0.01f, gridSize/2}, (Color){255, 255, 255, 100});
+    }
 
-                // Draw some cubes around
-                for (int i = 0; i < MAX_COLUMNS; i++)
-                {
-                    DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-                    DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
-                }
     EndMode3D();
-    DrawCircle(400, 225, 50, RED);
+
+
+    int centerX = GetScreenWidth() / 2;
+    int centerY = GetScreenHeight() / 2;
+    int size = 6;  // size of the crosshair arms
+
+    int thickness = 2;
+    DrawRectangle(centerX - size, centerY - thickness / 2, size * 2, thickness, RED); // horizontal bar
+    DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, RED); // vertical bar
 
 
 }
