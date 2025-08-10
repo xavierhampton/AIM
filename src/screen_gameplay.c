@@ -5,6 +5,7 @@
 #include "rcamera.h"
 #include "screens.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -29,7 +30,19 @@ void InitGameplayScreen(void)
     camera.fovy = 60.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
-    gridTexture = LoadTexture("src/resources/texture1.png");
+    gridTexture = LoadTexture("src/resources/textures/texture1.png");
+    if (gridTexture.id == 0)
+    {
+        printf("Failed to load grid texture!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // After loading your texture:
+    GenTextureMipmaps(&gridTexture);
+    SetTextureWrap(gridTexture, TEXTURE_WRAP_REPEAT);
+    SetTextureFilter(gridTexture, TEXTURE_FILTER_POINT);
+
+
 
     DisableCursor();
     SetTargetFPS(300);              
@@ -53,6 +66,7 @@ void UpdateGameplayScreen(void)
 void DrawGameplayScreen(void)
 {
     DrawMap();
+    DrawTexture(gridTexture, 100, 100, WHITE);
     DrawCrosshair();
 }
 
@@ -85,20 +99,31 @@ void DrawCrosshair(void)
 
 void DrawGridPlane(Vector3 position, Vector2 size, float rotationXDegrees)
 {
-    Vector2 texSize = { size.x * 2, size.y * 2 };
-    Vector2 texCoord = { 0, 0 };
+    int segments = 32;
+    Mesh planeMesh = GenMeshPlane(size.x, size.y, segments, segments);
 
-    // Draw the grid texture
-    Mesh planeMesh = GenMeshPlane(32.0f, 32.0f, 1, 1);
+    int vertexCount = (segments + 1) * (segments + 1);
+
+    float *texcoords = planeMesh.texcoords;
+
+    for (int i = 0; i < vertexCount; i++)
+    {
+        texcoords[i*2] *= 4.0f;     // U
+        texcoords[i*2 + 1] *= 4.0f; // V
+    }
+
+    // Update texcoords buffer on GPU — pass pointer and offset 0
+    UpdateMeshBuffer(planeMesh, 1, texcoords, vertexCount * 2 * sizeof(float), 0);
+
     Model gridModel = LoadModelFromMesh(planeMesh);
-
     gridModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = gridTexture;
-    gridModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].value = 8.0f; 
-    DrawModel(gridModel, position, 1.0f, WHITE);
+
+    DrawModelEx(gridModel, position, (Vector3){1.0f, 0.0f, 0.0f}, rotationXDegrees * DEG2RAD, (Vector3){1.0f, 1.0f, 1.0f}, WHITE);
 
     UnloadModel(gridModel);
-
 }
+
+
 
 void DrawMap(void)
 {
