@@ -14,6 +14,8 @@ static Camera camera = { 0 };
 Texture2D gridTexture;
 static int finishScreen = 0; 
 
+Model model;
+
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -39,10 +41,19 @@ void InitGameplayScreen(void)
 
     // After loading your texture:
     GenTextureMipmaps(&gridTexture);
+    SetTextureFilter(gridTexture, TEXTURE_FILTER_ANISOTROPIC_16X);
     SetTextureWrap(gridTexture, TEXTURE_WRAP_REPEAT);
-    SetTextureFilter(gridTexture, TEXTURE_FILTER_POINT);
 
+    ToggleFullscreen();
 
+    model = LoadModel("src/resources/models/shootingGallery.obj");
+    if (model.meshCount == 0)
+    {
+        printf("Failed to load model!\n");
+        exit(EXIT_FAILURE);
+    }
+    Texture2D texture = LoadTexture("src/resources/models/text.png"); // Load model texture
+    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;            // Set map diffuse texture
 
     DisableCursor();
     SetTargetFPS(300);              
@@ -53,6 +64,12 @@ void UpdateGameplayScreen(void)
 {
     // TODO: Update GAMEPLAY screen variables here!
     UpdateCamera(&camera, CAMERA_FIRST_PERSON);
+
+
+    if (IsKeyPressed(KEY_F11))
+    {
+        ToggleBorderlessWindowed();
+    }
 
     // Press enter or tap to change to ENDING screen
     if (IsKeyPressed(KEY_ENTER))
@@ -65,8 +82,8 @@ void UpdateGameplayScreen(void)
 // Gameplay Screen Draw logic
 void DrawGameplayScreen(void)
 {
+    
     DrawMap();
-    DrawTexture(gridTexture, 100, 100, WHITE);
     DrawCrosshair();
 }
 
@@ -99,7 +116,8 @@ void DrawCrosshair(void)
 
 void DrawGridPlane(Vector3 position, Vector2 size, float rotationXDegrees)
 {
-    int segments = 32;
+    
+    int segments = 16;
     Mesh planeMesh = GenMeshPlane(size.x, size.y, segments, segments);
 
     int vertexCount = (segments + 1) * (segments + 1);
@@ -108,8 +126,8 @@ void DrawGridPlane(Vector3 position, Vector2 size, float rotationXDegrees)
 
     for (int i = 0; i < vertexCount; i++)
     {
-        texcoords[i*2] *= 4.0f;     // U
-        texcoords[i*2 + 1] *= 4.0f; // V
+        texcoords[i*2] *= 16.0f;     // U
+        texcoords[i*2 + 1] *= 16.0f; // V
     }
 
     // Update texcoords buffer on GPU — pass pointer and offset 0
@@ -130,7 +148,10 @@ void DrawMap(void)
     BeginMode3D(camera);
 
     // Draw the grid
-    DrawGridPlane((Vector3){0, 0, 0}, (Vector2){32.0f, 32.0f}, 0);
+    DrawGrid(20, 2.0f);
+    DrawModel(model, (Vector3){0, 0, 0}, 1.0f, WHITE);
+
+    DrawCubeWires((Vector3){0, 0, 0}, 1.0f, 0.01f, 1.0f, RED);
 
     EndMode3D();
 }
