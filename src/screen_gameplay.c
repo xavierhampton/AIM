@@ -52,8 +52,16 @@ void InitGameplayScreen(void)
         printf("Failed to load model!\n");
         exit(EXIT_FAILURE);
     }
-    Texture2D texture = LoadTexture("src/resources/models/text.png"); // Load model texture
-    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;            // Set map diffuse texture
+    
+    Texture2D texture = LoadTexture("src/resources/textures/textureMap.png"); // Load model texture
+    if (texture.id == 0)
+    {
+        printf("Failed to load model texture!\n");
+        exit(EXIT_FAILURE);
+    }
+
+
+    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;   
 
     DisableCursor();
     SetTargetFPS(300);              
