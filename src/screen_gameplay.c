@@ -151,7 +151,6 @@ void DrawMap(void)
     BeginMode3D(camera);
 
     // Draw the grid
-    DrawGrid(20, 2.0f);
     DrawModel(model, (Vector3){0, 0, 0}, 1.0f, WHITE);
 
     DrawCubeWires((Vector3){0, 0, 0}, 1.0f, 0.01f, 1.0f, RED);
