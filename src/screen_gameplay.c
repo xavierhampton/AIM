@@ -6,6 +6,7 @@
 #include "screens.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "rlgl.h"
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -46,22 +47,16 @@ void InitGameplayScreen(void)
 
     ToggleFullscreen();
 
-    model = LoadModel("src/resources/models/shootingGallery.obj");
+
+    model = LoadModel("src/resources/models/shootingGallery.glb");
     if (model.meshCount == 0)
     {
         printf("Failed to load model!\n");
         exit(EXIT_FAILURE);
     }
+
     
-    Texture2D texture = LoadTexture("src/resources/textures/textureMap.png"); // Load model texture
-    if (texture.id == 0)
-    {
-        printf("Failed to load model texture!\n");
-        exit(EXIT_FAILURE);
-    }
-
-
-    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;   
+//    rlDisableBackfaceCulling();
 
     DisableCursor();
     SetTargetFPS(300);              
