@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "rcamera.h"
 #include "screens.h"
+#include "assert.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "rlgl.h"
@@ -45,7 +46,6 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     UpdateCamera(&camera, CAMERA_FIRST_PERSON);
-
 
 
     //KEY HOOKS
