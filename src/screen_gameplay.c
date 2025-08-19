@@ -20,6 +20,7 @@ static Ray mouseRay = { 0 };
 // Game Variables
 //----------------------------------------------------------------------------------
 static float sensitivity = 0.001f;
+
 static Vector3 spheres[] = {
     { 0.0f, 1.0f, 6.0f },
     { 4.0f, 1.0f, 6.0f },
@@ -32,24 +33,20 @@ static Vector3 spheres[] = {
 void DrawCrosshair(void);
 void DrawMap(void);
 void UpdateMouse(void);
+void InitCamera(void);
+void DrawTargets(void);
+int CheckTargetHit(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
     //GLOBAL SETTINGS
     ToggleFullscreen();
+    InitCamera();
 
-    //CAMERA SETTINGS
-    camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
-    camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 103.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-
-    //MODEL LOADING
+    //SKYBOX
     skybox = LoadModel("resources/models/skybox.glb");
     assert(skybox.meshCount > 0);
-
 
     //GAME START
     DisableCursor();
@@ -59,34 +56,8 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     UpdateMouse();
-
-    //KEY HOOKS
-    if (IsKeyPressed(KEY_F11))
-    {
-        ToggleBorderlessWindowed();
-    }
-    if (IsKeyPressed(KEY_ENTER))
-    {
-        finishScreen = 1;
-        PlaySound(fxCoin);
-    }
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-    {
-        for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
-        {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, spheres[i], 0.5f);
-
-            if (sphereCollision.hit)
-            {
-
-            PlaySound(fxCoin);
-            printf("Sphere hit at position: %f, %f, %f\n", spheres[i].x, spheres[i].y, spheres[i].z);
-
-            }
+    int target = CheckTargetHit();
     
-    }
-}
 }
 
 void DrawGameplayScreen(void)
@@ -106,12 +77,20 @@ int FinishGameplayScreen(void)
 }
 
 
-
-
-
 //----------------------------------------------------------------------------------
 // Private Functions
 //----------------------------------------------------------------------------------
+
+void InitCamera(void)
+{
+     //CAMERA SETTINGS
+    camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
+    camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    camera.fovy = 103.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
+}
+
 void DrawCrosshair(void)
 {
     int centerX = GetScreenWidth() / 2;
@@ -138,9 +117,7 @@ void DrawMap(void)
     DrawGrid(4, 0.5f);
 
     //SPHERES
-    DrawSphere((Vector3){ 0.0f, 1.0f, 6.0f }, 0.5f, (Color) { 210, 210, 0, 255 });
-    DrawSphere((Vector3){ 4.0f, 1.0f, 6.0f }, 0.5f, (Color) { 210, 210, 0, 255 });
-    DrawSphere((Vector3){ -4.0f, 1.0f, 6.0f }, 0.5f, (Color) { 210, 210, 0, 255 });
+    DrawTargets();
 
     EndMode3D();
 }
@@ -163,4 +140,32 @@ void UpdateMouse(void)
     Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
     mouseRay = GetMouseRay(screenCenter, camera);
 
+}
+
+void DrawTargets(void)
+{
+    for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
+    {
+        DrawSphere(spheres[i], 0.5f, (Color){ 210, 210, 0, 255 });
+    }
+}
+
+int CheckTargetHit(void)
+{
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
+        {
+            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, spheres[i], 0.5f);
+
+            if (sphereCollision.hit)
+            {
+
+            PlaySound(fxCoin);
+            return i; // Return the index of the hit sphere
+
+            }
+        }
+    }
+    return -1;
 }
