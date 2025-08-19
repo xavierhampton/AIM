@@ -58,6 +58,7 @@ int main(void)
     //music = LoadMusicStream("resources/ambient.ogg"); // TODO: Load music
     fxCoin = LoadSound("resources/coin.wav");
 
+    SetSoundVolume(fxCoin,0.1f);
     SetMusicVolume(music, 1.0f);
     PlayMusicStream(music);
 
