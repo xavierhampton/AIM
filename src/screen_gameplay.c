@@ -27,6 +27,8 @@ static Vector3 spheres[] = {
     { -4.0f, 1.0f, 6.0f }
 };
 
+static float sphereSize = 0.5f;
+
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
@@ -146,7 +148,7 @@ void DrawTargets(void)
 {
     for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
     {
-        DrawSphere(spheres[i], 0.5f, (Color){ 210, 210, 0, 255 });
+        DrawSphere(spheres[i], sphereSize, (Color){ 210, 210, 0, 255 });
     }
 }
 
@@ -156,7 +158,7 @@ int CheckTargetHit(void)
     {
         for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, spheres[i], 0.5f);
+            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, spheres[i], sphereSize);
 
             if (sphereCollision.hit)
             {
