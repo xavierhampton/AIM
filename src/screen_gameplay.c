@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "rlgl.h"
+#include "raymath.h"
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -19,6 +20,7 @@ Model skybox = { 0 };
 //----------------------------------------------------------------------------------
 void DrawCrosshair(void);
 void DrawMap(void);
+void UpdateMouse(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -31,7 +33,8 @@ void InitGameplayScreen(void)
     camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera.fovy = 103.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
+    camera.projection = CAMERA_CUSTOM;
+    
 
     //MODEL LOADING
     skybox = LoadModel("src/resources/models/skybox.glb");
@@ -45,7 +48,7 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(void)
 {
-    UpdateCamera(&camera, CAMERA_FIRST_PERSON);
+    UpdateMouse();
 
 
 
@@ -104,8 +107,25 @@ void DrawMap(void)
     rlEnableDepthMask();
     rlEnableBackfaceCulling();
 
-
     DrawGrid(8, 0.5f);
 
     EndMode3D();
+}
+
+void UpdateMouse(void)
+{
+    
+    Vector2 mouseDelta = GetMouseDelta();
+    float sensitivity = 0.001f;   // adjust for speed
+
+    Matrix rotation = MatrixRotateY(-mouseDelta.x * sensitivity);
+    Vector3 forward = Vector3Subtract(camera.target, camera.position);
+    forward = Vector3Transform(forward, rotation);
+
+    Vector3 right = Vector3CrossProduct(camera.up, forward);
+    rotation = MatrixRotate(right, mouseDelta.y * sensitivity);
+    forward = Vector3Transform(forward, rotation);
+
+    camera.target = Vector3Add(camera.position, forward);
+
 }
