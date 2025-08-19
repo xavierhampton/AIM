@@ -27,10 +27,10 @@ void InitGameplayScreen(void)
     ToggleFullscreen();
 
     //CAMERA SETTINGS
-    camera.position = (Vector3){ 0.0f, 2.0f, 4.0f };
-    camera.target = (Vector3){ 0.0f, 2.0f, 0.0f };
+    camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
+    camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 60.0f;
+    camera.fovy = 103.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
     //MODEL LOADING
@@ -46,6 +46,7 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     UpdateCamera(&camera, CAMERA_FIRST_PERSON);
+
 
 
     //KEY HOOKS
@@ -104,7 +105,7 @@ void DrawMap(void)
     rlEnableBackfaceCulling();
 
 
-    DrawGrid(32, 3.0f);
+    DrawGrid(8, 0.5f);
 
     EndMode3D();
 }
