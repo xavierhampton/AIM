@@ -7,6 +7,10 @@
 #include "rlgl.h"
 #include "raymath.h"
 
+#include "raygui.h"
+
+
+
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
@@ -15,6 +19,7 @@ static Camera camera = { 0 };
 Model skybox = { 0 };
 static Ray mouseRay = { 0 };
 
+static int pause = 0;
 
 //----------------------------------------------------------------------------------
 // Game Variables
@@ -34,7 +39,9 @@ static float sphereSize = 0.5f;
 //----------------------------------------------------------------------------------
 void DrawCrosshair(void);
 void DrawMap(void);
+void DrawGUI(void);
 void UpdateMouse(void);
+void UpdatePause(void);
 void InitCamera(void);
 void DrawTargets(void);
 int CheckTargetHit(void);
@@ -43,7 +50,7 @@ int CheckTargetHit(void);
 void InitGameplayScreen(void)
 {
     //GLOBAL SETTINGS
-    ToggleFullscreen();
+    // ToggleFullscreen();
     InitCamera();
 
     //SKYBOX
@@ -58,6 +65,7 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     UpdateMouse();
+    UpdatePause();
     int target = CheckTargetHit();
     
 }
@@ -65,6 +73,10 @@ void UpdateGameplayScreen(void)
 void DrawGameplayScreen(void)
 {
     DrawMap();
+    if (pause)
+    {
+        DrawGUI();
+    }
     DrawCrosshair();
 }
 
@@ -124,6 +136,21 @@ void DrawMap(void)
     EndMode3D();
 }
 
+void DrawGUI(void)
+{
+    int centerX = GetScreenWidth() / 2;
+    int centerY = GetScreenHeight() / 2;
+    int buttonWidth = GetScreenWidth() / 6;
+    int buttonHeight = GetScreenHeight() / 12;
+
+    // Draw the GUI elements here
+    if (GuiButton((Rectangle){ centerX - buttonWidth / 2, centerY - buttonHeight / 2, buttonWidth, buttonHeight }, "Pause"))
+    {
+        // Pause the game
+    }
+
+}
+
 void UpdateMouse(void)
 {
 
@@ -142,6 +169,14 @@ void UpdateMouse(void)
     Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
     mouseRay = GetMouseRay(screenCenter, camera);
 
+}
+
+void UpdatePause(void)
+{
+    if (IsKeyPressed(KEY_TAB))
+    {
+        pause = !pause;
+    }
 }
 
 void DrawTargets(void)
