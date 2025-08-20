@@ -15,12 +15,15 @@
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
+enum MENU { MAIN, PAUSE, SETTINGS };
+static int menu = MAIN;
+
 static int finishScreen = 0; 
 static Camera camera = { 0 };
 Model skybox = { 0 };
 static Ray mouseRay = { 0 };
 
-static int pause = 0;
+
 
 //----------------------------------------------------------------------------------
 // Game Variables
@@ -47,6 +50,7 @@ void InitCamera(void);
 void DrawTargets(void);
 int CheckTargetHit(void);
 void DrawPauseMenu(void);
+void DrawSettingsMenu(void);
 void DrawHUD(void);
 void InitTheme(const char* theme);
 
@@ -69,7 +73,7 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(void)
 {
-    if (!pause) {UpdateMouse();}
+    if (menu == MAIN) {UpdateMouse();}
     UpdatePause();
     int target = CheckTargetHit();
     
@@ -143,7 +147,8 @@ void DrawGUI(void)
 {
 
     DrawHUD();
-    if (pause)  { DrawPauseMenu(); }
+    if (menu == PAUSE)  { DrawPauseMenu(); }
+    else if (menu == SETTINGS) { DrawSettingsMenu(); }
 
 }
 
@@ -172,21 +177,50 @@ void DrawPauseMenu(void)
     //Button Text Size
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
 
-     if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
-    {
-        pause = false;
-        DisableCursor();
-    }
 
-     if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
-    {
-        // Pause the game
-    }
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
+        {
+            menu = MAIN;
+            DisableCursor();
+        }
 
-        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
-    {
-        // Pause the game
-    }
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
+        {
+            menu = SETTINGS;
+        }
+
+            if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
+        {
+            menu = MAIN;
+            DisableCursor();
+        }
+
+   
+}
+
+void DrawSettingsMenu(void) {
+        int centerX = GetScreenWidth() / 2;
+        int centerY = GetScreenHeight() / 2;
+        int buttonWidth = GetScreenWidth() / 6;
+        int buttonHeight = GetScreenHeight() / 12;
+
+        int gap = 20 + (buttonHeight);
+
+        //Fade Overlay
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
+
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
+
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Back"))
+        {
+            menu = PAUSE;
+        }
+
+        // Sensitivity Slider
+        GuiSetStyle(SLIDER, TEXT_SIZE, 20);
+        GuiLabel((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2), buttonWidth, buttonHeight }, "Sensitivity");
+        sensitivity = GuiSlider((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + 30, buttonWidth, 20 }, NULL, TextFormat("%.3f", sensitivity), &sensitivity, 0.001f, 0.01f);
+    
 
 }
 
@@ -226,11 +260,11 @@ void UpdatePause(void)
 {
     if (IsKeyPressed(KEY_TAB))
     {
-        pause = !pause;
+        menu = (menu == PAUSE || menu == SETTINGS) ? MAIN : PAUSE;
 
-        if (pause) {EnableCursor();} 
-         else {DisableCursor();}
-        
+        if (menu == PAUSE) {EnableCursor();}
+        else {DisableCursor();}
+
     }
 
 }
