@@ -45,6 +45,8 @@ void UpdatePause(void);
 void InitCamera(void);
 void DrawTargets(void);
 int CheckTargetHit(void);
+void DrawPauseMenu(void);
+void DrawHUD(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -64,7 +66,7 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(void)
 {
-    UpdateMouse();
+    if (!pause) {UpdateMouse();}
     UpdatePause();
     int target = CheckTargetHit();
     
@@ -73,8 +75,9 @@ void UpdateGameplayScreen(void)
 void DrawGameplayScreen(void)
 {
     DrawMap();
-    DrawGUI();
     DrawCrosshair();
+    DrawGUI();
+    
 }
 
 void UnloadGameplayScreen(void)
@@ -99,7 +102,7 @@ void InitCamera(void)
     camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     camera.fovy = 103.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
+    camera.projection = CAMERA_CUSTOM;
 }
 
 void DrawCrosshair(void)
@@ -157,10 +160,30 @@ void DrawPauseMenu(void)
     int buttonWidth = GetScreenWidth() / 6;
     int buttonHeight = GetScreenHeight() / 12;
 
-    if (GuiButton((Rectangle){ centerX - buttonWidth / 2, centerY - buttonHeight / 2, buttonWidth, buttonHeight }, "Pause"))
+    int gap = 20 + (buttonHeight);
+
+    //Fade Overlay
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
+
+
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
+
+
+     if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
     {
         // Pause the game
     }
+
+     if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
+    {
+        // Pause the game
+    }
+
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
+    {
+        // Pause the game
+    }
+
 }
 
 void UpdateMouse(void)
@@ -188,7 +211,12 @@ void UpdatePause(void)
     if (IsKeyPressed(KEY_TAB))
     {
         pause = !pause;
+
+        if (pause) {EnableCursor();} 
+         else {DisableCursor();}
+        
     }
+
 }
 
 void DrawTargets(void)
