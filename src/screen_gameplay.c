@@ -1,12 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "raylib.h"
 #include "rcamera.h"
 #include "screens.h"
 #include "assert.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include "rlgl.h"
 #include "raymath.h"
-
 #include "raygui.h"
 
 
@@ -47,6 +48,7 @@ void DrawTargets(void);
 int CheckTargetHit(void);
 void DrawPauseMenu(void);
 void DrawHUD(void);
+void InitTheme(const char* theme);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -54,6 +56,7 @@ void InitGameplayScreen(void)
     //GLOBAL SETTINGS
     // ToggleFullscreen();
     InitCamera();
+    InitTheme("DARK");
 
     //SKYBOX
     skybox = LoadModel("resources/models/skybox.glb");
@@ -166,12 +169,13 @@ void DrawPauseMenu(void)
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
 
 
+    //Button Text Size
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
-
 
      if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
     {
-        // Pause the game
+        pause = false;
+        DisableCursor();
     }
 
      if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
@@ -184,6 +188,18 @@ void DrawPauseMenu(void)
         // Pause the game
     }
 
+}
+
+void InitTheme(const char *theme)
+{
+    if (strcmp(theme, "DARK") == 0)
+    {
+        GuiSetStyle(DEFAULT, BACKGROUND_COLOR, ColorToInt((Color){20, 20, 20, 255}));
+        GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt((Color){40, 40, 40, 255}));
+        GuiSetStyle(BUTTON, BASE_COLOR_FOCUSED, ColorToInt((Color){60, 60, 60, 255}));
+        GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, ColorToInt((Color){90, 90, 90, 255}));
+        GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, ColorToInt((Color){220, 220, 220, 255}));
+    }
 }
 
 void UpdateMouse(void)
