@@ -73,10 +73,7 @@ void UpdateGameplayScreen(void)
 void DrawGameplayScreen(void)
 {
     DrawMap();
-    if (pause)
-    {
-        DrawGUI();
-    }
+    DrawGUI();
     DrawCrosshair();
 }
 
@@ -138,17 +135,32 @@ void DrawMap(void)
 
 void DrawGUI(void)
 {
+
+    DrawHUD();
+    if (pause)  { DrawPauseMenu(); }
+
+}
+
+void DrawHUD(void)
+{
+    int centerX = GetScreenWidth() / 2;
+    int centerY = GetScreenHeight() / 2;
+
+    // Draw the HUD elements here
+    
+}
+
+void DrawPauseMenu(void)
+{
     int centerX = GetScreenWidth() / 2;
     int centerY = GetScreenHeight() / 2;
     int buttonWidth = GetScreenWidth() / 6;
     int buttonHeight = GetScreenHeight() / 12;
 
-    // Draw the GUI elements here
     if (GuiButton((Rectangle){ centerX - buttonWidth / 2, centerY - buttonHeight / 2, buttonWidth, buttonHeight }, "Pause"))
     {
         // Pause the game
     }
-
 }
 
 void UpdateMouse(void)
