@@ -17,6 +17,10 @@
 //----------------------------------------------------------------------------------
 enum MENU { MAIN, PAUSE, SETTINGS };
 static int menu = MAIN;
+static int centerX = {0};
+static int centerY = {0};
+static int buttonWidth = {0};
+static int buttonHeight = {0};
 
 static int finishScreen = 0; 
 static Camera camera = { 0 };
@@ -28,7 +32,7 @@ static Ray mouseRay = { 0 };
 //----------------------------------------------------------------------------------
 // Game Variables
 //----------------------------------------------------------------------------------
-static float sensitivity = 0.001f;
+static float sensitivity = 1.0f;
 
 static Vector3 spheres[] = {
     { 0.0f, 1.0f, 6.0f },
@@ -45,7 +49,7 @@ void DrawCrosshair(void);
 void DrawMap(void);
 void DrawGUI(void);
 void UpdateMouse(void);
-void UpdatePause(void);
+void PollEvents(void);
 void InitCamera(void);
 void DrawTargets(void);
 int CheckTargetHit(void);
@@ -53,6 +57,7 @@ void DrawPauseMenu(void);
 void DrawSettingsMenu(void);
 void DrawHUD(void);
 void InitTheme(const char* theme);
+void UpdateGlobals(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
@@ -74,7 +79,8 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     if (menu == MAIN) {UpdateMouse();}
-    UpdatePause();
+    PollEvents();
+    UpdateGlobals();
     int target = CheckTargetHit();
     
 }
@@ -163,11 +169,6 @@ void DrawHUD(void)
 
 void DrawPauseMenu(void)
 {
-    int centerX = GetScreenWidth() / 2;
-    int centerY = GetScreenHeight() / 2;
-    int buttonWidth = GetScreenWidth() / 6;
-    int buttonHeight = GetScreenHeight() / 12;
-
     int gap = 20 + (buttonHeight);
 
     //Fade Overlay
@@ -198,12 +199,15 @@ void DrawPauseMenu(void)
    
 }
 
-void DrawSettingsMenu(void) {
-        int centerX = GetScreenWidth() / 2;
-        int centerY = GetScreenHeight() / 2;
-        int buttonWidth = GetScreenWidth() / 6;
-        int buttonHeight = GetScreenHeight() / 12;
+void UpdateGlobals(void)
+{
+    centerX = GetScreenWidth() / 2;
+    centerY = GetScreenHeight() / 2;
+    buttonWidth = GetScreenWidth() / 6;
+    buttonHeight = GetScreenHeight() / 12;
+}
 
+void DrawSettingsMenu(void) {
         int gap = 20 + (buttonHeight);
 
         //Fade Overlay
@@ -219,8 +223,7 @@ void DrawSettingsMenu(void) {
         // Sensitivity Slider
         GuiSetStyle(SLIDER, TEXT_SIZE, 20);
         GuiLabel((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2), buttonWidth, buttonHeight }, "Sensitivity");
-        sensitivity = GuiSlider((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + 30, buttonWidth, 20 }, NULL, TextFormat("%.3f", sensitivity), &sensitivity, 0.001f, 0.01f);
-    
+        sensitivity = GuiSlider((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + 30, buttonWidth, 20 }, NULL, TextFormat("%.3f", sensitivity), &sensitivity, 1.0f, 10.0f);
 
 }
 
@@ -239,14 +242,16 @@ void InitTheme(const char *theme)
 void UpdateMouse(void)
 {
 
+    float sens = sensitivity / 1000;
+
     Vector2 mouseDelta = GetMouseDelta();
-    
-    Matrix rotation = MatrixRotateY(-mouseDelta.x * sensitivity);
+
+    Matrix rotation = MatrixRotateY(-mouseDelta.x * sens);
     Vector3 forward = Vector3Subtract(camera.target, camera.position);
     forward = Vector3Transform(forward, rotation);
 
     Vector3 right = Vector3CrossProduct(camera.up, forward);
-    rotation = MatrixRotate(right, mouseDelta.y * sensitivity);
+    rotation = MatrixRotate(right, mouseDelta.y * sens);
     forward = Vector3Transform(forward, rotation);
 
     camera.target = Vector3Add(camera.position, forward);
@@ -256,7 +261,7 @@ void UpdateMouse(void)
 
 }
 
-void UpdatePause(void)
+void PollEvents(void)
 {
     if (IsKeyPressed(KEY_TAB))
     {
