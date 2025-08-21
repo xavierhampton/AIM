@@ -19,8 +19,6 @@ enum MENU { MAIN, PAUSE, SETTINGS };
 static int menu = MAIN;
 static int centerX = {0};
 static int centerY = {0};
-static int buttonWidth = {0};
-static int buttonHeight = {0};
 
 static int finishScreen = 0; 
 static Camera camera = { 0 };
@@ -33,6 +31,11 @@ static Ray mouseRay = { 0 };
 // Game Variables
 //----------------------------------------------------------------------------------
 static float sensitivity = 1.0f;
+static float volume = 1.0f;
+
+static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE };
+static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple" };
+static int colorIndex = 0;
 
 static Vector3 spheres[] = {
     { 0.0f, 1.0f, 6.0f },
@@ -169,8 +172,9 @@ void DrawHUD(void)
 
 void DrawPauseMenu(void)
 {
+    int buttonWidth = GetScreenWidth() / 6;
+    int buttonHeight = GetScreenHeight() / 12;
     int gap = 20 + (buttonHeight);
-
     //Fade Overlay
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
 
@@ -178,53 +182,99 @@ void DrawPauseMenu(void)
     //Button Text Size
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
 
-
-        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
-        {
-            menu = MAIN;
-            DisableCursor();
-        }
-
-        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
+    if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) , buttonWidth, buttonHeight }, "Settings"))
         {
             menu = SETTINGS;
         }
 
-            if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2 , (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Resume"))
         {
             menu = MAIN;
             DisableCursor();
         }
 
+        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
+        {
+            menu = MAIN;
+            DisableCursor();     
+        }
    
+}
+
+
+void DrawSettingsMenu(void)
+{
+    // Fade Overlay
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
+
+    // Menu dimensions
+    int menuWidth = 600;
+    int menuHeight = 450;
+    int menuX = centerX - menuWidth / 2;
+    int menuY = centerY - menuHeight / 2;
+
+
+    // Group Box
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 40);
+    GuiSetStyle(DEFAULT, TEXT_SPACING, 5);
+    GuiGroupBox((Rectangle){menuX, menuY, menuWidth, menuHeight}, "Settings");
+
+    int controlWidth = 400;
+    int controlHeight = 40;
+    int spacingY = 100; 
+    int startY = menuY + 60; 
+
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+    GuiSetStyle(DEFAULT, TEXT_SPACING, 3);
+
+    
+    // --------------------
+    // Master Volume Slider
+
+    DrawText("Master Volume", centerX - MeasureText("Master Volume", 20)/2, startY, 20, RAYWHITE);
+    GuiSliderBar((Rectangle){centerX - controlWidth/2, startY + 30, controlWidth, controlHeight},
+                 NULL, TextFormat("%.2f", volume), &volume, 0.0f, 1.0f);
+
+    // --------------------
+    // Mouse Sensitivity Slider
+    int sensY = startY + spacingY;
+    DrawText("Mouse Sensitivity", centerX - MeasureText("Mouse Sensitivity", 20)/2, sensY, 20, RAYWHITE);
+    GuiSliderBar((Rectangle){centerX - controlWidth/2, sensY + 30, controlWidth, controlHeight},
+                 NULL, TextFormat("%.2f", sensitivity), &sensitivity, 0.1f, 3.0f);
+
+
+    // --------------------
+    // Target Color Arrow Picker
+    int colorY = sensY + spacingY;
+    DrawText("Target Color", centerX - MeasureText("Target Color", 20)/2, colorY, 20, RAYWHITE);
+
+    if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, colorY + 30, 40, controlHeight}, "<"))
+    {
+        colorIndex--;
+        if (colorIndex < 0) colorIndex = 6;
+    }
+    if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, colorY + 30, 40, controlHeight}, ">"))
+    {
+        colorIndex++;
+        if (colorIndex > 6) colorIndex = 0;
+    }
+
+    // Color preview rectangle
+    DrawRectangle(centerX - controlWidth / 2, colorY + 30, controlWidth, controlHeight, targetColors[colorIndex]);
+    DrawText(colorNames[colorIndex], centerX - MeasureText(colorNames[colorIndex], 20)/2, colorY + 40, 20, BLACK);
+
+    // --------------------
+    // Back button
+    if (GuiButton((Rectangle){centerX - 100, menuY + menuHeight - 70, 200, 50}, "Back"))
+    {
+        menu = PAUSE;
+    }
 }
 
 void UpdateGlobals(void)
 {
     centerX = GetScreenWidth() / 2;
     centerY = GetScreenHeight() / 2;
-    buttonWidth = GetScreenWidth() / 6;
-    buttonHeight = GetScreenHeight() / 12;
-}
-
-void DrawSettingsMenu(void) {
-        int gap = 20 + (buttonHeight);
-
-        //Fade Overlay
-        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
-
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
-
-        if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) - gap, buttonWidth, buttonHeight }, "Back"))
-        {
-            menu = PAUSE;
-        }
-
-        // Sensitivity Slider
-        GuiSetStyle(SLIDER, TEXT_SIZE, 20);
-        GuiLabel((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2), buttonWidth, buttonHeight }, "Sensitivity");
-        sensitivity = GuiSlider((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + 30, buttonWidth, 20 }, NULL, TextFormat("%.3f", sensitivity), &sensitivity, 1.0f, 10.0f);
-
 }
 
 void InitTheme(const char *theme)
@@ -278,13 +328,13 @@ void DrawTargets(void)
 {
     for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
     {
-        DrawSphere(spheres[i], sphereSize, (Color){ 210, 210, 0, 255 });
+        DrawSphere(spheres[i], sphereSize, targetColors[colorIndex]);
     }
 }
 
 int CheckTargetHit(void)
 {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && menu == MAIN)
     {
         for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
         {
