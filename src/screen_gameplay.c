@@ -117,7 +117,7 @@ void InitCamera(void)
     camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
     camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 103.0f;
+    camera.fovy = 73.74f;
     camera.projection = CAMERA_CUSTOM;
 }
 
@@ -289,26 +289,40 @@ void InitTheme(const char *theme)
     }
 }
 
-void UpdateMouse(void)
+// Global camera angles
+float yaw = 0.0f;
+float pitch = 0.0f;
+
+// Call this every frame
+void UpdateMouse()
 {
+    Vector2 delta = GetMouseDelta();  
 
-    float sens = sensitivity / 1000;
+    int mouseDPI = 800; 
 
-    Vector2 mouseDelta = GetMouseDelta();
+    const float baseDPI = 800.0f;    
+    const float degPerCount = 0.07f; 
 
-    Matrix rotation = MatrixRotateY(-mouseDelta.x * sens);
-    Vector3 forward = Vector3Subtract(camera.target, camera.position);
-    forward = Vector3Transform(forward, rotation);
+    float dpiScale = mouseDPI / baseDPI;
 
-    Vector3 right = Vector3CrossProduct(camera.up, forward);
-    rotation = MatrixRotate(right, mouseDelta.y * sens);
-    forward = Vector3Transform(forward, rotation);
+    float dx = delta.x * sensitivity * degPerCount * dpiScale * DEG2RAD;
+    float dy = delta.y * sensitivity * degPerCount * dpiScale * DEG2RAD;
+
+    yaw   -= dx;   
+    pitch += -dy;  
+
+    float pitchLimit = 89.0f * DEG2RAD;
+    if (pitch > pitchLimit) pitch = pitchLimit;
+    if (pitch < -pitchLimit) pitch = -pitchLimit;
+
+    Vector3 forward;
+    forward.x = cosf(pitch) * sinf(yaw);
+    forward.y = sinf(pitch);
+    forward.z = cosf(pitch) * cosf(yaw);
 
     camera.target = Vector3Add(camera.position, forward);
-
     Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
     mouseRay = GetMouseRay(screenCenter, camera);
-
 }
 
 void PollEvents(void)
