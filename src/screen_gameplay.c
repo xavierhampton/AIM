@@ -8,6 +8,7 @@
 #include "rlgl.h"
 #include "raymath.h"
 #include "raygui.h"
+#include "math.h"
 
 //----------------------------------------------------------------------------------
 // Structures
@@ -22,14 +23,14 @@ typedef struct game_engine {
     float time;
     float sphereSize;
     int targetCount;
-    float gap;
+    int targetHealth;
 
-    float minX;
-    float minY;
-    float minZ;
-    float maxX;
-    float maxY;
-    float maxZ;
+    int gap;
+    int xVar;
+    int yVar;
+
+    int minZ;
+    int maxZ;
 
     void (*Update)(void);
 } GameEngine;
@@ -59,7 +60,7 @@ static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yello
 static int colorIndex = 0;
 static int hudColorIndex = 2;
 
-static Target targets[] = {0};
+ static Target* targets;
 
 static float targetSize = 0.5f;
 
@@ -118,6 +119,7 @@ void DrawGameplayScreen(void)
 void UnloadGameplayScreen(void)
 {
     UnloadModel(skybox);
+    free(targets);
 }
 
 int FinishGameplayScreen(void)
@@ -405,22 +407,45 @@ int CheckTargetHit(void)
 //----------------------------------------------------------------------------------
 //
 
+
+
 void initEngine(void) 
 {
     gameEngine.time = 999.0f;
     gameEngine.sphereSize = 0.5f;
     gameEngine.targetCount = 3;
-    gameEngine.gap = 1.0f;
+    gameEngine.gap = 10;
+    gameEngine.targetHealth = 1;
 
-    gameEngine.minZ = 10.0f;
-    gameEngine.maxZ = 10.0f;
+    gameEngine.minZ = 100;
+    gameEngine.maxZ = 100;
 
-    gameEngine.minY = -10.0f;
-    gameEngine.minX = -10.0f;
-    gameEngine.maxY = 10.0f;
-    gameEngine.maxX = 10.0f;
+    gameEngine.xVar = 100;
+    gameEngine.yVar = 100;
 
+    targets = malloc(gameEngine.targetCount * sizeof(Target));
     gameEngine.Update = GridShot;
+
+}
+
+float Vector3Distance(Vector3 a, Vector3 b) {
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    float dz = a.z - b.z;
+    return sqrtf(dx*dx + dy*dy + dz*dz);
+}
+
+int checkInterference(Vector3 pos)
+{
+    int n = gameEngine.targetCount;
+    for (int i = 0; i < n; i++)
+    {
+        if (Vector3Distance < gameEngine.gap)
+        {
+            return 1;
+        }
+    }
+    return 0;
 
 }
 
@@ -429,12 +454,30 @@ void initEngine(void)
 //----------------------------------------------------------------------------------
 void GridShot(void) 
 {
-    int n = sizeof(targets)/sizeof(targets[0]);
+    int n = gameEngine.targetCount;
+    int maxFreq = 50;
+
     for (int i = 0; i < n; i++)
     {
         if (targets[i].health <= 0)
         {
-            
+            while (maxFreq > 0){
+                //Attempt to create Target (maxFreq = 50)
+                int x = (rand() % (gameEngine.xVar / 10));
+                int y = (rand() % (gameEngine.yVar / 10));
+                int z = ((rand() % (gameEngine.maxZ / 10)) + gameEngine.minZ );
+                Vector3 pos = {x,y,z};
+
+                
+
+
+
+
+
+                maxFreq -= 1;
+            }
+
+
         }
     }
 }
