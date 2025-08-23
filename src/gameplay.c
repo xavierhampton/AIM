@@ -1,14 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "raylib.h"
-#include "rcamera.h"
 #include "common.h"
-#include "assert.h"
-#include "rlgl.h"
-#include "raymath.h"
-#include "raygui.h"
-#include "math.h"
+#include "raygui.h" 
+#include "draw.c"
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -22,7 +14,6 @@ static int finishScreen = 0;
 
 
 Model skybox = { 0 };
-static Ray mouseRay = { 0 };
 
 static TargetEngine targetEngine = { 0 };
 static GameEngine gameEngine = { 0 };
@@ -30,14 +21,6 @@ static GameEngine gameEngine = { 0 };
 //----------------------------------------------------------------------------------
 // Game Variables
 //----------------------------------------------------------------------------------
-static float sensitivity = 1.0f;
-static float volume = 1.0f;
-
-static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE };
-static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple" };
-static int colorIndex = 0;
-static int hudColorIndex = 2;
-
  static Target* targets;
 
 static float targetSize = 0.5f;
@@ -152,7 +135,7 @@ void DrawMap(void)
     rlEnableBackfaceCulling();
 
     //FLOOR
-    DrawGrid(4, 0.5f);
+    DrawGrid(12, 0.5f);
 
     //SPHERES
     DrawTargets();
@@ -254,14 +237,14 @@ void DrawSettingsMenu(void)
 
     DrawText("Master Volume", centerX - MeasureText("Master Volume", 20)/2, startY, 20, RAYWHITE);
     GuiSliderBar((Rectangle){centerX - controlWidth/2, startY + 30, controlWidth, controlHeight},
-                 NULL, TextFormat("%.2f", volume), &volume, 0.0f, 1.0f);
+                 NULL, TextFormat("%.2f", gameEngine.volume), &gameEngine.volume, 0.0f, 1.0f);
 
     // --------------------
     // Mouse Sensitivity Slider
     int sensY = startY + spacingY;
     DrawText("Mouse Sensitivity", centerX - MeasureText("Mouse Sensitivity", 20)/2, sensY, 20, RAYWHITE);
     GuiSliderBar((Rectangle){centerX - controlWidth/2, sensY + 30, controlWidth, controlHeight},
-                 NULL, TextFormat("%.2f", sensitivity), &sensitivity, 0.1f, 3.0f);
+                 NULL, TextFormat("%.2f", gameEngine.sensitivity), &gameEngine.sensitivity, 0.1f, 3.0f);
 
 
     // --------------------
@@ -326,8 +309,8 @@ void UpdateMouse()
 
     float dpiScale = mouseDPI / baseDPI;
 
-    float dx = delta.x * sensitivity * degPerCount * dpiScale * DEG2RAD;
-    float dy = delta.y * sensitivity * degPerCount * dpiScale * DEG2RAD;
+    float dx = delta.x * gameEngine.sensitivity * degPerCount * dpiScale * DEG2RAD;
+    float dy = delta.y *  gameEngine.sensitivity * degPerCount * dpiScale * DEG2RAD;
 
     yaw   -= dx;   
     pitch += -dy;  
@@ -343,7 +326,7 @@ void UpdateMouse()
 
     gameEngine.camera.target = Vector3Add(gameEngine.camera.position, forward);
     Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
-    mouseRay = GetMouseRay(screenCenter, gameEngine.camera);
+    gameEngine.mouseRay = GetMouseRay(screenCenter, gameEngine.camera);
 }
 
 void PollEvents(void)
@@ -375,7 +358,7 @@ int CheckTargetHit(void)
         int n = targetEngine.targetCount;
         for (int i = 0; i < n; i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, targetEngine.sphereSize);
+            RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.sphereSize);
 
             if (sphereCollision.hit)
             {

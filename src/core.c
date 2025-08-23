@@ -1,10 +1,8 @@
 
-#include "raylib.h"
-#include "common.h"    
-#include "stdlib.h"
-
+#include "common.h"
 #define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
+#include "raygui.h" 
+
 
 //----------------------------------------------------------------------------------
 // Shared Variables Definition (global)
