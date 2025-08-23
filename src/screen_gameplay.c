@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "raylib.h"
 #include "rcamera.h"
 #include "screens.h"
@@ -20,7 +19,18 @@ typedef struct target {
 } Target;
 
 typedef struct game_engine {
+    float time;
     float sphereSize;
+    int targetCount;
+    float gap;
+
+    float minX;
+    float minY;
+    float minZ;
+    float maxX;
+    float maxY;
+    float maxZ;
+
     void (*Update)(void);
 } GameEngine;
 
@@ -36,8 +46,7 @@ static int finishScreen = 0;
 static Camera camera = { 0 };
 Model skybox = { 0 };
 static Ray mouseRay = { 0 };
-
-
+static GameEngine gameEngine = { 0 };
 
 //----------------------------------------------------------------------------------
 // Game Variables
@@ -50,13 +59,9 @@ static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yello
 static int colorIndex = 0;
 static int hudColorIndex = 2;
 
-static Vector3 spheres[] = {
-    { 0.0f, 1.0f, 6.0f },
-    { 4.0f, 1.0f, 6.0f },
-    { -4.0f, 1.0f, 6.0f }
-};
+static Target targets[] = {0};
 
-static float sphereSize = 0.5f;
+static float targetSize = 0.5f;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -366,9 +371,9 @@ void PollEvents(void)
 
 void DrawTargets(void)
 {
-    for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
+    for (int i = 0; i < sizeof(targets)/sizeof(targets[0]); i++)
     {
-        DrawSphere(spheres[i], sphereSize, targetColors[colorIndex]);
+        DrawSphere(targets[i].position, targetSize, targetColors[colorIndex]);
     }
 }
 
@@ -376,14 +381,15 @@ int CheckTargetHit(void)
 {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && menu == MAIN)
     {
-        for (int i = 0; i < sizeof(spheres)/sizeof(spheres[0]); i++)
+        for (int i = 0; i < sizeof(targets)/sizeof(targets[0]); i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, spheres[i], sphereSize);
+            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, targetSize);
 
             if (sphereCollision.hit)
             {
 
             PlaySound(fxCoin);
+            targets[i].health -= 1;
             return i; // Return the index of the hit sphere
 
             }
@@ -393,7 +399,42 @@ int CheckTargetHit(void)
 }
 
 
-
+//
 //----------------------------------------------------------------------------------
 // Game Engine
 //----------------------------------------------------------------------------------
+//
+
+void initEngine(void) 
+{
+    gameEngine.time = 999.0f;
+    gameEngine.sphereSize = 0.5f;
+    gameEngine.targetCount = 3;
+    gameEngine.gap = 1.0f;
+
+    gameEngine.minZ = 10.0f;
+    gameEngine.maxZ = 10.0f;
+
+    gameEngine.minY = -10.0f;
+    gameEngine.minX = -10.0f;
+    gameEngine.maxY = 10.0f;
+    gameEngine.maxX = 10.0f;
+
+    gameEngine.Update = GridShot;
+
+}
+
+//----------------------------------------------------------------------------------
+// Grid Shot
+//----------------------------------------------------------------------------------
+void GridShot(void) 
+{
+    int n = sizeof(targets)/sizeof(targets[0]);
+    for (int i = 0; i < n; i++)
+    {
+        if (targets[i].health <= 0)
+        {
+            
+        }
+    }
+}
