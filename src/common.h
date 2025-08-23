@@ -97,6 +97,7 @@ void DrawHUD(void);
 void DrawPauseMenu(void);
 void DrawSettingsMenu(void);
 void DrawTargets(void);
+void UpdateGlobals(void);
 
 #endif
 

@@ -6,41 +6,28 @@
 //----------------------------------------------------------------------------------
 static int finishScreen = 0; 
 
-
-
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
 
+void InitEngine(void);
+void InitCamera(void);
+void InitTheme(const char* theme);
+
 void UpdateMouse(void);
 void PollEvents(void);
-void InitCamera(void);
-
 int CheckTargetHit(void);
-
-
-void InitTheme(const char* theme);
-void UpdateGlobals(void);
-
-
 int checkInterference(Vector3 pos);
-void InitEngine(void);
+
 void Gridshot(void);
 
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
     InitDraw();
-
-
-    // ToggleFullscreen();
-    InitCamera();
     InitTheme("DARK");
     InitEngine();
 
-
-
-    //GAME START
     DisableCursor();
     SetTargetFPS(300);              
 }
@@ -54,7 +41,6 @@ void UpdateGameplayScreen(void)
     UpdateGlobals();
     int target = CheckTargetHit();
 
-    
 }
 
 void DrawGameplayScreen(void)
@@ -83,7 +69,8 @@ int FinishGameplayScreen(void)
 
 void InitCamera(void)
 {
-     //CAMERA SETTINGS
+    gameEngine.sensitivity = 1.0f;
+    //CAMERA SETTINGS
     gameEngine.camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
     gameEngine.camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     gameEngine.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
@@ -171,11 +158,10 @@ void UpdateMouse()
 //----------------------------------------------------------------------------------
 //
 
-
-
-
 void InitEngine(void) 
 {
+    InitCamera();
+    
     targetEngine.time = 999.0f;
     targetEngine.sphereSize = 0.45f;
     targetEngine.targetCount = 3;
