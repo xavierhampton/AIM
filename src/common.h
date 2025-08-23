@@ -17,6 +17,7 @@
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
 typedef enum GameScreen { UNKNOWN = -1, LOGO = 0, GAMEPLAY } GameScreen;
+enum MENU { MAIN, PAUSE, SETTINGS };
 
 typedef struct target {
     Vector3 position;
@@ -62,6 +63,12 @@ extern Font font;
 extern Music music;
 extern Sound fxCoin;
 
+
+extern int menu;
+extern TargetEngine targetEngine;
+extern GameEngine gameEngine;
+extern Target* targets;
+
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions
 #endif
@@ -69,11 +76,30 @@ extern "C" {            // Prevents name mangling of functions
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Declaration
 //----------------------------------------------------------------------------------
+
+//gameplay
 void InitGameplayScreen(void);
 void UpdateGameplayScreen(void);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 int FinishGameplayScreen(void);
+
+// draw
+#ifndef DRAW_H
+#define DRAW_H
+
+void InitDraw(void);
+void UnloadDraw(void);
+void DrawCrosshair(void);
+void DrawMap(void);
+void DrawGUI(void);
+void DrawHUD(void);
+void DrawPauseMenu(void);
+void DrawSettingsMenu(void);
+void DrawTargets(void);
+
+#endif
+
 
 #ifdef __cplusplus
 }
