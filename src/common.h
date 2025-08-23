@@ -48,10 +48,6 @@ typedef struct game_engine {
     float sensitivity;
     float volume;
 
-
-
-
-
 }GameEngine;
 
 
@@ -87,7 +83,6 @@ int FinishGameplayScreen(void);
 // draw
 #ifndef DRAW_H
 #define DRAW_H
-
 void InitDraw(void);
 void UnloadDraw(void);
 void DrawCrosshair(void);
@@ -98,6 +93,9 @@ void DrawPauseMenu(void);
 void DrawSettingsMenu(void);
 void DrawTargets(void);
 void UpdateGlobals(void);
+
+//maps
+void Gridshot(void);
 
 #endif
 

@@ -70,6 +70,7 @@ int FinishGameplayScreen(void)
 void InitCamera(void)
 {
     gameEngine.sensitivity = 1.0f;
+
     //CAMERA SETTINGS
     gameEngine.camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
     gameEngine.camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
@@ -78,7 +79,45 @@ void InitCamera(void)
     gameEngine.camera.projection = CAMERA_CUSTOM;
 }
 
+void InitEngine(void) 
+{
+    InitCamera();
 
+    targetEngine.time = 999.0f;
+    targetEngine.sphereSize = 0.45f;
+    targetEngine.targetCount = 3;
+    targetEngine.gap = 10;
+    targetEngine.targetHealth = 1;
+
+    targetEngine.minZ = 60;
+    targetEngine.maxZ = 50;
+
+    targetEngine.xVar = 30;
+    targetEngine.yVar = 30;
+
+    targets = malloc(targetEngine.targetCount * sizeof(Target));
+    for (int i = 0; i < targetEngine.targetCount; i++)
+    {
+        Target t = {{0,0,0}, 0};
+        targets[i] = t;
+    }
+
+    targetEngine.Update = Gridshot;
+
+}
+
+void PollEvents(void)
+{
+    if (IsKeyPressed(KEY_TAB))
+    {
+        menu = (menu == PAUSE || menu == SETTINGS) ? MAIN : PAUSE;
+
+        if (menu == PAUSE) {EnableCursor();}
+        else {DisableCursor();}
+
+    }
+
+}
 
 int CheckTargetHit(void)
 {
@@ -102,18 +141,8 @@ int CheckTargetHit(void)
     return -1;
 }
 
-void PollEvents(void)
-{
-    if (IsKeyPressed(KEY_TAB))
-    {
-        menu = (menu == PAUSE || menu == SETTINGS) ? MAIN : PAUSE;
 
-        if (menu == PAUSE) {EnableCursor();}
-        else {DisableCursor();}
 
-    }
-
-}
 
 // Global camera angles
 float yaw = 0.0f;
@@ -151,87 +180,4 @@ void UpdateMouse()
     gameEngine.mouseRay = GetMouseRay(screenCenter, gameEngine.camera);
 }
 
-
-//
-//----------------------------------------------------------------------------------
-// Game Engine
-//----------------------------------------------------------------------------------
-//
-
-void InitEngine(void) 
-{
-    InitCamera();
-    
-    targetEngine.time = 999.0f;
-    targetEngine.sphereSize = 0.45f;
-    targetEngine.targetCount = 3;
-    targetEngine.gap = 10;
-    targetEngine.targetHealth = 1;
-
-    targetEngine.minZ = 60;
-    targetEngine.maxZ = 50;
-
-    targetEngine.xVar = 30;
-    targetEngine.yVar = 30;
-
-    targets = malloc(targetEngine.targetCount * sizeof(Target));
-    for (int i = 0; i < targetEngine.targetCount; i++)
-    {
-        Target t = {{0,0,0}, 0};
-        targets[i] = t;
-    }
-
-    targetEngine.Update = Gridshot;
-
-}
-
-int checkInterference(Vector3 pos)
-{
-    int n = targetEngine.targetCount;
-    for (int i = 0; i < n; i++)
-    {
-        if (Vector3Distance(pos, targets[i].position) < (targetEngine.gap / 10))
-        {
-            return 1;
-        }
-    }
-    return 0;
-
-}
-
-//----------------------------------------------------------------------------------
-// Grid Shot
-//----------------------------------------------------------------------------------
-void Gridshot(void) 
-{
-    int n = targetEngine.targetCount;
-    int maxFreq = 50;
-
-    for (int i = 0; i < n; i++)
-    {
-        if (targets[i].health <= 0)
-        {
-            while (maxFreq > 0){
-                //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (targetEngine.xVar / 10)) - 1;
-                int y = (rand() % (targetEngine.yVar / 10)) + 1;
-                int z = targetEngine.maxZ / 10;
-
-                Vector3 pos = {x,y,z};
-
-                if (!checkInterference(pos)) {
-                    Target newTarget = {pos, targetEngine.targetHealth};
-                    targets[i] = newTarget;
-
-                    printf("%d %d %d \n",x, y, z );
-
-                    break;
-                }
-                maxFreq -= 1;
-            }
-
-
-        }
-    }
-}
 
