@@ -81,6 +81,11 @@ void DrawHUD(void);
 void InitTheme(const char* theme);
 void UpdateGlobals(void);
 
+
+int checkInterference(Vector3 pos);
+void initEngine(void);
+void Gridshot(void);
+
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
@@ -89,6 +94,7 @@ void InitGameplayScreen(void)
     // ToggleFullscreen();
     InitCamera();
     InitTheme("DARK");
+    initEngine();
 
     //SKYBOX
     skybox = LoadModel("resources/models/skybox.glb");
@@ -105,6 +111,7 @@ void UpdateGameplayScreen(void)
     PollEvents();
     UpdateGlobals();
     int target = CheckTargetHit();
+    gameEngine.Update();
     
 }
 
@@ -373,9 +380,10 @@ void PollEvents(void)
 
 void DrawTargets(void)
 {
-    for (int i = 0; i < sizeof(targets)/sizeof(targets[0]); i++)
+    int n = gameEngine.targetCount;
+    for (int i = 0; i < n; i++)
     {
-        DrawSphere(targets[i].position, targetSize, targetColors[colorIndex]);
+        DrawSphere(targets[i].position, gameEngine.sphereSize, targetColors[colorIndex]);
     }
 }
 
@@ -383,16 +391,17 @@ int CheckTargetHit(void)
 {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && menu == MAIN)
     {
-        for (int i = 0; i < sizeof(targets)/sizeof(targets[0]); i++)
+        int n = gameEngine.targetCount;
+        for (int i = 0; i < n; i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, targetSize);
+            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, gameEngine.sphereSize);
 
             if (sphereCollision.hit)
             {
 
-            PlaySound(fxCoin);
-            targets[i].health -= 1;
-            return i; // Return the index of the hit sphere
+                PlaySound(fxCoin);
+                targets[i].health -= 1;
+                return i; // Return the index of the hit sphere
 
             }
         }
@@ -406,6 +415,7 @@ int CheckTargetHit(void)
 // Game Engine
 //----------------------------------------------------------------------------------
 //
+
 
 
 
@@ -424,23 +434,17 @@ void initEngine(void)
     gameEngine.yVar = 100;
 
     targets = malloc(gameEngine.targetCount * sizeof(Target));
-    gameEngine.Update = GridShot;
+    gameEngine.Update = Gridshot;
 
 }
 
-float Vector3Distance(Vector3 a, Vector3 b) {
-    float dx = a.x - b.x;
-    float dy = a.y - b.y;
-    float dz = a.z - b.z;
-    return sqrtf(dx*dx + dy*dy + dz*dz);
-}
 
 int checkInterference(Vector3 pos)
 {
     int n = gameEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        if (Vector3Distance < gameEngine.gap)
+        if (Vector3Distance(pos, targets[i].position) < gameEngine.gap)
         {
             return 1;
         }
@@ -452,7 +456,7 @@ int checkInterference(Vector3 pos)
 //----------------------------------------------------------------------------------
 // Grid Shot
 //----------------------------------------------------------------------------------
-void GridShot(void) 
+void Gridshot(void) 
 {
     int n = gameEngine.targetCount;
     int maxFreq = 50;
@@ -471,6 +475,8 @@ void GridShot(void)
                 if (!checkInterference(pos)) {
                     Target newTarget = {pos, gameEngine.targetHealth};
                     targets[i] = newTarget;
+                    printf("%d %d %d \n", targets[i].position.x, targets[i].position.y, targets[i].position.z );
+
                     break;
                 }
                 maxFreq -= 1;
