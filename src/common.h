@@ -1,6 +1,6 @@
 
-#ifndef SCREENS_H
-#define SCREENS_H
+#ifndef COMMON_H
+#define COMMON_H
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
@@ -32,4 +32,4 @@ int FinishGameplayScreen(void);
 }
 #endif
 
-#endif // SCREENS_H
+#endif

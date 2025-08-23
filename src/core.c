@@ -1,6 +1,6 @@
 
 #include "raylib.h"
-#include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
+#include "common.h"    
 #include "stdlib.h"
 
 #define RAYGUI_IMPLEMENTATION
