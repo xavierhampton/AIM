@@ -108,10 +108,12 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     if (menu == MAIN) {UpdateMouse();}
+    gameEngine.Update();
+
     PollEvents();
     UpdateGlobals();
     int target = CheckTargetHit();
-    gameEngine.Update();
+
     
 }
 
@@ -215,6 +217,7 @@ void DrawPauseMenu(void)
     int buttonWidth = GetScreenWidth() / 6;
     int buttonHeight = GetScreenHeight() / 12;
     int gap = 20 + (buttonHeight);
+    
     //Fade Overlay
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){ 0, 0, 0, 150 });
 
@@ -422,29 +425,34 @@ int CheckTargetHit(void)
 void initEngine(void) 
 {
     gameEngine.time = 999.0f;
-    gameEngine.sphereSize = 0.5f;
+    gameEngine.sphereSize = 0.45f;
     gameEngine.targetCount = 3;
     gameEngine.gap = 10;
     gameEngine.targetHealth = 1;
 
-    gameEngine.minZ = 100;
-    gameEngine.maxZ = 100;
+    gameEngine.minZ = 60;
+    gameEngine.maxZ = 50;
 
-    gameEngine.xVar = 100;
-    gameEngine.yVar = 100;
+    gameEngine.xVar = 30;
+    gameEngine.yVar = 30;
 
     targets = malloc(gameEngine.targetCount * sizeof(Target));
+    for (int i = 0; i < gameEngine.targetCount; i++)
+    {
+        Target t = {{0,0,0}, 0};
+        targets[i] = t;
+    }
+
     gameEngine.Update = Gridshot;
 
 }
-
 
 int checkInterference(Vector3 pos)
 {
     int n = gameEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        if (Vector3Distance(pos, targets[i].position) < gameEngine.gap)
+        if (Vector3Distance(pos, targets[i].position) < (gameEngine.gap / 10))
         {
             return 1;
         }
@@ -467,15 +475,17 @@ void Gridshot(void)
         {
             while (maxFreq > 0){
                 //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (gameEngine.xVar / 10));
-                int y = (rand() % (gameEngine.yVar / 10));
-                int z = ((rand() % (gameEngine.maxZ / 10)) + gameEngine.minZ );
+                int x = (rand() % (gameEngine.xVar / 10)) - 1;
+                int y = (rand() % (gameEngine.yVar / 10)) + 1;
+                int z = gameEngine.maxZ / 10;
+
                 Vector3 pos = {x,y,z};
 
                 if (!checkInterference(pos)) {
                     Target newTarget = {pos, gameEngine.targetHealth};
                     targets[i] = newTarget;
-                    printf("%d %d %d \n", targets[i].position.x, targets[i].position.y, targets[i].position.z );
+
+                    printf("%d %d %d \n",x, y, z );
 
                     break;
                 }
@@ -486,3 +496,4 @@ void Gridshot(void)
         }
     }
 }
+
