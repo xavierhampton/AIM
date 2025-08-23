@@ -7,6 +7,38 @@
 //----------------------------------------------------------------------------------
 typedef enum GameScreen { UNKNOWN = -1, LOGO = 0, GAMEPLAY } GameScreen;
 
+typedef struct target {
+    Vector3 position;
+    int health;
+} Target;
+
+typedef struct target_engine {
+    float time;
+    float sphereSize;
+    int targetCount;
+    int targetHealth;
+
+    int gap;
+    int xVar;
+    int yVar;
+
+    int minZ;
+    int maxZ;
+
+    void (*Update)(void);
+} TargetEngine;
+
+
+typedef struct game_engine {
+    Camera camera;
+    Ray mouseRay;
+
+    float sensitivity;
+    float volume;
+
+}GameEngine;
+
+
 //----------------------------------------------------------------------------------
 // Global Variables Declaration (shared by several modules)
 //----------------------------------------------------------------------------------

@@ -11,42 +11,20 @@
 #include "math.h"
 
 //----------------------------------------------------------------------------------
-// Structures
-//----------------------------------------------------------------------------------
-
-typedef struct target {
-    Vector3 position;
-    int health;
-} Target;
-
-typedef struct game_engine {
-    float time;
-    float sphereSize;
-    int targetCount;
-    int targetHealth;
-
-    int gap;
-    int xVar;
-    int yVar;
-
-    int minZ;
-    int maxZ;
-
-    void (*Update)(void);
-} GameEngine;
-
-//----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 enum MENU { MAIN, PAUSE, SETTINGS };
 static int menu = MAIN;
+
 static int centerX = {0};
 static int centerY = {0};
-
 static int finishScreen = 0; 
-static Camera camera = { 0 };
+
+
 Model skybox = { 0 };
 static Ray mouseRay = { 0 };
+
+static TargetEngine targetEngine = { 0 };
 static GameEngine gameEngine = { 0 };
 
 //----------------------------------------------------------------------------------
@@ -108,7 +86,7 @@ void InitGameplayScreen(void)
 void UpdateGameplayScreen(void)
 {
     if (menu == MAIN) {UpdateMouse();}
-    gameEngine.Update();
+    targetEngine.Update();
 
     PollEvents();
     UpdateGlobals();
@@ -144,11 +122,11 @@ int FinishGameplayScreen(void)
 void InitCamera(void)
 {
      //CAMERA SETTINGS
-    camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
-    camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 70.53f;
-    camera.projection = CAMERA_CUSTOM;
+    gameEngine.camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
+    gameEngine.camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
+    gameEngine.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    gameEngine.camera.fovy = 70.53f;
+    gameEngine.camera.projection = CAMERA_CUSTOM;
 }
 
 void DrawCrosshair(void)
@@ -164,7 +142,7 @@ void DrawCrosshair(void)
 
 void DrawMap(void)
 {
-    BeginMode3D(camera);
+    BeginMode3D(gameEngine.camera);
 
     //SKYBOX!!!
     rlDisableBackfaceCulling();
@@ -363,9 +341,9 @@ void UpdateMouse()
     forward.y = sinf(pitch);
     forward.z = cosf(pitch) * cosf(yaw);
 
-    camera.target = Vector3Add(camera.position, forward);
+    gameEngine.camera.target = Vector3Add(gameEngine.camera.position, forward);
     Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
-    mouseRay = GetMouseRay(screenCenter, camera);
+    mouseRay = GetMouseRay(screenCenter, gameEngine.camera);
 }
 
 void PollEvents(void)
@@ -383,10 +361,10 @@ void PollEvents(void)
 
 void DrawTargets(void)
 {
-    int n = gameEngine.targetCount;
+    int n = targetEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        DrawSphere(targets[i].position, gameEngine.sphereSize, targetColors[colorIndex]);
+        DrawSphere(targets[i].position, targetEngine.sphereSize, targetColors[colorIndex]);
     }
 }
 
@@ -394,10 +372,10 @@ int CheckTargetHit(void)
 {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && menu == MAIN)
     {
-        int n = gameEngine.targetCount;
+        int n = targetEngine.targetCount;
         for (int i = 0; i < n; i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, gameEngine.sphereSize);
+            RayCollision sphereCollision = GetRayCollisionSphere(mouseRay, targets[i].position, targetEngine.sphereSize);
 
             if (sphereCollision.hit)
             {
@@ -424,35 +402,35 @@ int CheckTargetHit(void)
 
 void initEngine(void) 
 {
-    gameEngine.time = 999.0f;
-    gameEngine.sphereSize = 0.45f;
-    gameEngine.targetCount = 3;
-    gameEngine.gap = 10;
-    gameEngine.targetHealth = 1;
+    targetEngine.time = 999.0f;
+    targetEngine.sphereSize = 0.45f;
+    targetEngine.targetCount = 3;
+    targetEngine.gap = 10;
+    targetEngine.targetHealth = 1;
 
-    gameEngine.minZ = 60;
-    gameEngine.maxZ = 50;
+    targetEngine.minZ = 60;
+    targetEngine.maxZ = 50;
 
-    gameEngine.xVar = 30;
-    gameEngine.yVar = 30;
+    targetEngine.xVar = 30;
+    targetEngine.yVar = 30;
 
-    targets = malloc(gameEngine.targetCount * sizeof(Target));
-    for (int i = 0; i < gameEngine.targetCount; i++)
+    targets = malloc(targetEngine.targetCount * sizeof(Target));
+    for (int i = 0; i < targetEngine.targetCount; i++)
     {
         Target t = {{0,0,0}, 0};
         targets[i] = t;
     }
 
-    gameEngine.Update = Gridshot;
+    targetEngine.Update = Gridshot;
 
 }
 
 int checkInterference(Vector3 pos)
 {
-    int n = gameEngine.targetCount;
+    int n = targetEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        if (Vector3Distance(pos, targets[i].position) < (gameEngine.gap / 10))
+        if (Vector3Distance(pos, targets[i].position) < (targetEngine.gap / 10))
         {
             return 1;
         }
@@ -466,7 +444,7 @@ int checkInterference(Vector3 pos)
 //----------------------------------------------------------------------------------
 void Gridshot(void) 
 {
-    int n = gameEngine.targetCount;
+    int n = targetEngine.targetCount;
     int maxFreq = 50;
 
     for (int i = 0; i < n; i++)
@@ -475,14 +453,14 @@ void Gridshot(void)
         {
             while (maxFreq > 0){
                 //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (gameEngine.xVar / 10)) - 1;
-                int y = (rand() % (gameEngine.yVar / 10)) + 1;
-                int z = gameEngine.maxZ / 10;
+                int x = (rand() % (targetEngine.xVar / 10)) - 1;
+                int y = (rand() % (targetEngine.yVar / 10)) + 1;
+                int z = targetEngine.maxZ / 10;
 
                 Vector3 pos = {x,y,z};
 
                 if (!checkInterference(pos)) {
-                    Target newTarget = {pos, gameEngine.targetHealth};
+                    Target newTarget = {pos, targetEngine.targetHealth};
                     targets[i] = newTarget;
 
                     printf("%d %d %d \n",x, y, z );
