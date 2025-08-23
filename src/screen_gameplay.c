@@ -36,6 +36,7 @@ static float volume = 1.0f;
 static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE };
 static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple" };
 static int colorIndex = 0;
+static int hudColorIndex = 2;
 
 static Vector3 spheres[] = {
     { 0.0f, 1.0f, 6.0f },
@@ -66,6 +67,7 @@ void UpdateGlobals(void);
 void InitGameplayScreen(void)
 {
     //GLOBAL SETTINGS
+
     // ToggleFullscreen();
     InitCamera();
     InitTheme("DARK");
@@ -117,7 +119,7 @@ void InitCamera(void)
     camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };
     camera.target = (Vector3){ 0.0f, 2.0f, 1.0f };
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 73.74f;
+    camera.fovy = 70.53f;
     camera.projection = CAMERA_CUSTOM;
 }
 
@@ -128,8 +130,8 @@ void DrawCrosshair(void)
     int size = 6;  // size of the crosshair arms
 
     int thickness = 2;
-    DrawRectangle(centerX - size, centerY - thickness / 2, size * 2, thickness, WHITE); // horizontal bar
-    DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, WHITE); // vertical bar
+    DrawRectangle(centerX - size, centerY - thickness / 2, size * 2, thickness, RAYWHITE); // horizontal bar
+    DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, RAYWHITE); // vertical bar
 }
 
 void DrawMap(void)
@@ -163,13 +165,25 @@ void DrawGUI(void)
 
 void DrawHUD(void)
 {
-    int centerX = GetScreenWidth() / 2;
-    int centerY = GetScreenHeight() / 2;
+    int padding = 30;
+    int gap = 45;
 
-    // Draw the HUD elements here
-    
+    int spacing = 40;
+
+    //Fade Overlay
+    DrawRectangle(0, 0, 235, 155, (Color){ 0, 0, 0, 150 });
+
+    DrawText("Time:", padding, padding, 30, targetColors[hudColorIndex]);
+    DrawText("00.00", gap + MeasureText("Time:", 30), padding, 30, RAYWHITE);
+
+    DrawText("Hit:", padding, spacing + padding, 30, targetColors[hudColorIndex]);
+    DrawText("0", gap + MeasureText("Hit:", 30), spacing + padding, 30, RAYWHITE);
+
+    DrawText("Acc:", padding, spacing * 2 + padding, 30, targetColors[hudColorIndex]);
+    DrawText("0", gap + MeasureText("Acc:", 30), spacing * 2 + padding, 30, RAYWHITE);
+
 }
-
+    
 void DrawPauseMenu(void)
 {
     int buttonWidth = GetScreenWidth() / 6;
@@ -365,3 +379,4 @@ int CheckTargetHit(void)
     }
     return -1;
 }
+
