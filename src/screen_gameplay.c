@@ -468,12 +468,11 @@ void GridShot(void)
                 int z = ((rand() % (gameEngine.maxZ / 10)) + gameEngine.minZ );
                 Vector3 pos = {x,y,z};
 
-                
-
-
-
-
-
+                if (!checkInterference(pos)) {
+                    Target newTarget = {pos, gameEngine.targetHealth};
+                    targets[i] = newTarget;
+                    break;
+                }
                 maxFreq -= 1;
             }
 
