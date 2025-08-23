@@ -10,7 +10,7 @@
 // Shared Variables Definition (global)
 // NOTE: Those variables are shared between modules through screens.h
 //----------------------------------------------------------------------------------
-GameScreen currentScreen = LOGO;
+GameScreen currentScreen = { 0 };
 Font font = { 0 };
 Music music = { 0 };
 Sound fxCoin = { 0 };
@@ -128,7 +128,7 @@ static void UpdateDrawFrame(void)
             {
                 UpdateGameplayScreen();
 
-                if (FinishGameplayScreen() == 1) ChangeToScreen(ENDING);
+                if (FinishGameplayScreen() == 1) ChangeToScreen(UNKNOWN);
                 //else if (FinishGameplayScreen() == 2) TransitionToScreen(TITLE);
 
             }
