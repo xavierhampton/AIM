@@ -52,34 +52,27 @@ void Track(void)
         Vector3 pos = {0, targetEngine.yVar, targetEngine.maxZ};
         targets[0] = (Target){pos, targetEngine.targetHealth};
     }
+
     Target old = targets[0];
+    Target new = { 0 };
     float delta = GetFrameTime();
-    
+    float speed = targetEngine.targetSpeed / 10;
 
-    for (int i = 0; i < n; i++)
+    if (dir == 1 && old.position.x > targetEngine.xVar)
     {
-        if (targets[i].health <= 0)
-        {
-            while (maxFreq > 0){
-                //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (targetEngine.xVar / 10)) - (int)(targetEngine.xVar / (2 * targetEngine.gap));
-                int y = (rand() % (targetEngine.yVar / 10)) + 1;
-                int z = targetEngine.maxZ / 10;
-
-                Vector3 pos = {x,y,z};
-
-                if (!checkInterference(pos)) {
-                    Target newTarget = {pos, targetEngine.targetHealth};
-                    targets[i] = newTarget;
-                    break;
-                }
-                maxFreq -= 1;
-                if (maxFreq == 0) {perror("Not Enough Space for Targets... Aborting");}
-            }
-
-
-        }
+        old.position.x = targetEngine.xVar;
+        dir = -1;
     }
+
+    else if (dir == -1 && old.position.x < -targetEngine.xVar)
+    {
+        old.position.x = -targetEngine.xVar;
+        dir = 1;
+    }
+
+    Vector3 pos = (Vector3){old.position.x + (dir * delta * speed), old.position.y, old.position.z};
+    new = (Target){pos, old.health};
+    
 }
 
 //----------------------------------------------------------------------------------

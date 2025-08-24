@@ -80,7 +80,7 @@ void LoadMap(const char *filename, TargetEngine *engine) {
 
         if (sscanf(line, "%63[^=]=%127s", key, value) == 2) {
             if (strcmp(key, "mapType") == 0) {
-                engine->mapType = trtol(value, NULL, 10);
+                engine->mapType = strtof(value, NULL);
             }
             else if (strcmp(key, "targetSize") == 0) {
                 engine->targetSize = strtof(value, NULL);
@@ -104,6 +104,9 @@ void LoadMap(const char *filename, TargetEngine *engine) {
                 engine->minZ = strtol(value, NULL, 10);
             }
             else if (strcmp(key, "maxZ") == 0) {
+                engine->maxZ = strtol(value, NULL, 10);
+            }
+            else if (strcmp(key, "targetSpeed") == 0) {
                 engine->maxZ = strtol(value, NULL, 10);
             }
         }

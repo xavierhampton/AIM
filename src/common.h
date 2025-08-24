@@ -30,6 +30,7 @@ typedef struct target_engine {
     float targetSize;
     int targetCount;
     int targetHealth;
+    int targetSpeed;
 
     int gap;
     int xVar;
