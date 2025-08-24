@@ -28,6 +28,7 @@ void DrawTargets(void);
 void DrawMapSelector(void);
 void DrawMapInfo(void);
 void DrawSettingsMenu(void);
+void InitTheme(const char*);
 
 void InitDraw(void) {
     skybox = LoadModel("resources/models/skybox.glb");
@@ -189,6 +190,7 @@ void DrawSettingsMenu(void)
     int menuX = centerX - menuWidth / 2;
     int menuY = centerY - menuHeight / 2;
 
+
     // Group Box
     GuiSetStyle(DEFAULT, TEXT_SIZE, 40);
     GuiSetStyle(DEFAULT, TEXT_SPACING, 5);
@@ -202,6 +204,7 @@ void DrawSettingsMenu(void)
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     GuiSetStyle(DEFAULT, TEXT_SPACING, 3);
 
+    
     // --------------------
     // Master Volume Slider
 
@@ -215,6 +218,7 @@ void DrawSettingsMenu(void)
     DrawText("Mouse Sensitivity", centerX - MeasureText("Mouse Sensitivity", 20)/2, sensY, 20, RAYWHITE);
     GuiSliderBar((Rectangle){centerX - controlWidth/2, sensY + 30, controlWidth, controlHeight},
                  NULL, TextFormat("%.2f", gameEngine.sensitivity), &gameEngine.sensitivity, 0.1f, 3.0f);
+
 
     // --------------------
     // Target Color Arrow Picker
@@ -245,11 +249,15 @@ void DrawSettingsMenu(void)
     {
         hudColorIndex--;
         if (hudColorIndex < 0) hudColorIndex = 6;
+        InitTheme("DARK");
+
     }
     if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, hudColorY + 30, 40, controlHeight}, ">"))
     {
         hudColorIndex++;
         if (hudColorIndex > 6) hudColorIndex = 0;
+        InitTheme("DARK");
+
     }
 
     // HUD color preview rectangle
@@ -304,7 +312,7 @@ void DrawMapSelector(void)
     {
         int itemIndex = i + scrollIndex;
         int itemY = y + padding + i * itemHeight;
-        Rectangle itemRect = {x + padding, itemY, listWidth - 2 * padding, itemHeight - 4};
+        Rectangle itemRect = {x + padding, itemY, listWidth - 3 * padding, itemHeight - 4};
 
         bool hovered    = CheckCollisionPointRec(GetMousePosition(), itemRect);
         bool isSelected = (selectedMap == itemIndex);
@@ -417,6 +425,18 @@ void InitTheme(const char *theme)
         GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, ColorToInt((Color){90, 90, 90, 255}));
         GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, ColorToInt((Color){220, 220, 220, 255}));
     }
+
+    // Normal: gray border, Focused: colored border, Pressed: colored border
+    GuiSetStyle(BUTTON, BORDER_COLOR_NORMAL, ColorToInt((Color){120, 120, 120, 255}));
+    GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
+    GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, ColorToInt(targetColors[hudColorIndex]));
+    GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt((Color){40, 40, 40, 255}));
+    GuiSetStyle(BUTTON, BASE_COLOR_FOCUSED, ColorToInt((Color){40, 40, 40, 255}));
+    GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, ColorToInt((Color){60, 60, 60, 255}));
+    
+    GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, ColorToInt(RAYWHITE));
+    GuiSetStyle(BUTTON, TEXT_COLOR_FOCUSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
+    GuiSetStyle(BUTTON, TEXT_COLOR_PRESSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
 }
 
 void DrawTargets(void)
