@@ -26,6 +26,15 @@ void LoadSettings(const char *filename, GameEngine *engine) {
             else if (strcmp(key, "volume") == 0) {
                 engine->volume = strtof(value, NULL);
             }
+            else if (strcmp(key, "colorIndex") == 0) {
+                engine->colorIndex = strtol(value, NULL, 10);
+            }
+            else if (strcmp(key, "hudColorIndex") == 0) {
+                engine->hudColorIndex = strtol(value, NULL, 10);
+            }
+            else if (strcmp(key, "crosshairColorIndex") == 0) {
+                engine->crosshairColorIndex = strtol(value, NULL, 10);
+            }
            
         }
     }
@@ -127,6 +136,9 @@ void SaveSettings() {
 
     fprintf(file, "sensitivity=%.2f\n", engine->sensitivity);
     fprintf(file, "volume=%.2f\n", engine->volume);
+    fprintf(file, "colorIndex=%d\n", engine->colorIndex);
+    fprintf(file, "hudColorIndex=%d\n", engine->hudColorIndex);
+    fprintf(file, "crosshairColorIndex=%d\n", engine->crosshairColorIndex);
 
     fclose(file);
 }

@@ -25,9 +25,10 @@ void Gridshot(void);
 void InitGameplayScreen(void)
 {
     LoadMaps("resources/maps", MAX_ENGINES);
+    InitEngine();
     InitDraw();
     InitTheme("DARK");
-    InitEngine();
+
 
     DisableCursor();
     SetTargetFPS(300);              
@@ -75,6 +76,10 @@ void InitCamera(void)
     gameEngine.timer = 0.00;
     gameEngine.hits = 0;
     gameEngine.shots = 0;
+
+    gameEngine.colorIndex = 0;
+    gameEngine.hudColorIndex = 6;
+    gameEngine.crosshairColorIndex = 7;
 
     LoadSettings("settings.txt", &gameEngine);
 

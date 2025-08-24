@@ -47,8 +47,13 @@ typedef struct game_engine {
     Camera camera;
     Ray mouseRay;
 
+    int colorIndex;
+    int hudColorIndex;
+    int crosshairColorIndex;
+    
     float sensitivity;
     float volume;
+
     float timer;
     int hits;
     int shots;

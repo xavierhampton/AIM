@@ -4,10 +4,8 @@
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
-static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE };
-static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple" };
-static int colorIndex = 0;
-static int hudColorIndex = 6;
+static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, RAYWHITE };
+static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "White" };
 
 static int centerX = {0};
 static int centerY = {0};
@@ -47,8 +45,8 @@ void DrawCrosshair(void)
     int size = 6;  // size of the crosshair arms
 
     int thickness = 2;
-    DrawRectangle(centerX - size, centerY - thickness / 2, size * 2, thickness, RAYWHITE); // horizontal bar
-    DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, RAYWHITE); // vertical bar
+    DrawRectangle(centerX - size, centerY - thickness / 2, size * 2, thickness, targetColors[gameEngine.crosshairColorIndex]); // horizontal bar
+    DrawRectangle(centerX - thickness / 2, centerY - size, thickness, size * 2, targetColors[gameEngine.crosshairColorIndex]); // vertical bar
 }
 
 void DrawMap(void)
@@ -107,7 +105,7 @@ void DrawHUD(void)
     int timerTextWidth = MeasureText(timerText, timerFontSize);
     int timerTextX = GetScreenWidth() / 2 - timerTextWidth / 2;
     int timerTextY = texY + arrowTexHeight / 2 - timerFontSize / 2;
-    DrawText(timerText, timerTextX, timerTextY, timerFontSize, targetColors[hudColorIndex]);
+    DrawText(timerText, timerTextX, timerTextY, timerFontSize, targetColors[gameEngine.hudColorIndex]);
 
     // Small Arrow Textures for Hits/Accuracy
     float smallScale = 0.5f;
@@ -127,7 +125,7 @@ void DrawHUD(void)
     int hitsTextWidth = MeasureText(hitsText, hitsFontSize);
     int hitsTextX = hitsArrowX + smallArrowWidth / 2 - hitsTextWidth / 2;
     int hitsTextY =  2 + arrowsY + smallArrowHeight / 2 - hitsFontSize / 2;
-    DrawText(hitsText, hitsTextX, hitsTextY, hitsFontSize, targetColors[hudColorIndex]);
+    DrawText(hitsText, hitsTextX, hitsTextY, hitsFontSize, targetColors[gameEngine.hudColorIndex]);
 
     //Accuracy Text
     char accText[16];
@@ -137,7 +135,7 @@ void DrawHUD(void)
     int accTextWidth = MeasureText(accText, accFontSize);
     int accTextX = accArrowX + smallArrowWidth / 2 - accTextWidth / 2;
     int accTextY =  2 + arrowsY + smallArrowHeight / 2 - accFontSize / 2;
-    DrawText(accText, accTextX, accTextY, accFontSize, targetColors[hudColorIndex]);
+    DrawText(accText, accTextX, accTextY, accFontSize, targetColors[gameEngine.hudColorIndex]);
 
 
 }
@@ -186,7 +184,7 @@ void DrawSettingsMenu(void)
 
     // Menu dimensions
     int menuWidth = 600;
-    int menuHeight = 550;
+    int menuHeight = 650;
     int menuX = centerX - menuWidth / 2;
     int menuY = centerY - menuHeight / 2;
 
@@ -227,42 +225,62 @@ void DrawSettingsMenu(void)
 
     if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, colorY + 30, 40, controlHeight}, "<"))
     {
-        colorIndex--;
-        if (colorIndex < 0) colorIndex = 6;
+        gameEngine.colorIndex--;
+        if (gameEngine.colorIndex < 0) gameEngine.colorIndex = 7;
     }
     if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, colorY + 30, 40, controlHeight}, ">"))
     {
-        colorIndex++;
-        if (colorIndex > 6) colorIndex = 0;
+        gameEngine.colorIndex++;
+        if (gameEngine.colorIndex > 7) gameEngine.colorIndex = 0;
     }
 
     // Color preview rectangle
-    DrawRectangle(centerX - controlWidth / 2, colorY + 30, controlWidth, controlHeight, targetColors[colorIndex]);
-    DrawText(colorNames[colorIndex], centerX - MeasureText(colorNames[colorIndex], 20)/2, colorY + 40, 20, BLACK);
+    DrawRectangle(centerX - controlWidth / 2, colorY + 30, controlWidth, controlHeight, targetColors[gameEngine.colorIndex]);
+    DrawText(colorNames[gameEngine.colorIndex], centerX - MeasureText(colorNames[gameEngine.colorIndex], 20)/2, colorY + 40, 20, BLACK);
+
+    // --------------------
+    // Crosshair Color Arrow Picker
+    int crosshairColorY = colorY + spacingY;
+    DrawText("Crosshair Color", centerX - MeasureText("Crosshair Color", 20)/2, crosshairColorY, 20, RAYWHITE);
+
+    if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, crosshairColorY + 30, 40, controlHeight}, "<"))
+    {
+        gameEngine.crosshairColorIndex--;
+        if (gameEngine.crosshairColorIndex < 0) gameEngine.crosshairColorIndex = 7;
+    }
+    if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, crosshairColorY + 30, 40, controlHeight}, ">"))
+    {
+        gameEngine.crosshairColorIndex++;
+        if (gameEngine.crosshairColorIndex > 7) gameEngine.crosshairColorIndex = 0;
+    }
+
+    // Crosshair color preview rectangle
+    DrawRectangle(centerX - controlWidth / 2, crosshairColorY + 30, controlWidth, controlHeight, targetColors[gameEngine.crosshairColorIndex]);
+    DrawText(colorNames[gameEngine.crosshairColorIndex], centerX - MeasureText(colorNames[gameEngine.crosshairColorIndex], 20)/2, crosshairColorY + 40, 20, BLACK);
 
     // --------------------
     // HUD Color Arrow Picker
-    int hudColorY = colorY + spacingY;
+    int hudColorY = crosshairColorY + spacingY;
     DrawText("HUD Color", centerX - MeasureText("HUD Color", 20)/2, hudColorY, 20, RAYWHITE);
 
     if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, hudColorY + 30, 40, controlHeight}, "<"))
     {
-        hudColorIndex--;
-        if (hudColorIndex < 0) hudColorIndex = 6;
+        gameEngine.hudColorIndex--;
+        if (gameEngine.hudColorIndex < 0) gameEngine.hudColorIndex = 7;
         InitTheme("DARK");
 
     }
     if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, hudColorY + 30, 40, controlHeight}, ">"))
     {
-        hudColorIndex++;
-        if (hudColorIndex > 6) hudColorIndex = 0;
+        gameEngine.hudColorIndex++;
+        if (gameEngine.hudColorIndex > 7) gameEngine.hudColorIndex = 0;
         InitTheme("DARK");
 
     }
 
     // HUD color preview rectangle
-    DrawRectangle(centerX - controlWidth / 2, hudColorY + 30, controlWidth, controlHeight, targetColors[hudColorIndex]);
-    DrawText(colorNames[hudColorIndex], centerX - MeasureText(colorNames[hudColorIndex], 20)/2, hudColorY + 40, 20, BLACK);
+    DrawRectangle(centerX - controlWidth / 2, hudColorY + 30, controlWidth, controlHeight, targetColors[gameEngine.hudColorIndex]);
+    DrawText(colorNames[gameEngine.hudColorIndex], centerX - MeasureText(colorNames[gameEngine.hudColorIndex], 20)/2, hudColorY + 40, 20, BLACK);
 
 
     if (GuiButton((Rectangle){centerX - 100, menuY + menuHeight - 70, 200, 50}, "Back"))
@@ -319,8 +337,8 @@ void DrawMapSelector(void)
 
         // Background Color
         Color bgColor = (Color){50, 50, 70, 120};
-        if (hovered)    bgColor = (Color){targetColors[hudColorIndex].r / 3, targetColors[hudColorIndex].g / 3, targetColors[hudColorIndex].b / 3, 180};
-        if (isSelected) bgColor = (Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180};
+        if (hovered)    bgColor = (Color){targetColors[gameEngine.hudColorIndex].r / 3, targetColors[gameEngine.hudColorIndex].g / 3, targetColors[gameEngine.hudColorIndex].b / 3, 180};
+        if (isSelected) bgColor = (Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180};
 
         DrawRectangleRec(itemRect, bgColor);
 
@@ -342,7 +360,7 @@ void DrawMapSelector(void)
         float barY = y + ((float)scrollIndex / (mapCount - visibleCount)) * (listHeight - barHeight);
 
         DrawRectangle(x + listWidth - 8, y + 2, 6, listHeight - 4, (Color){40, 40, 40, 180});
-        DrawRectangle(x + listWidth - 8, barY + 2, 6, barHeight - 4, (Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180});
+        DrawRectangle(x + listWidth - 8, barY + 2, 6, barHeight - 4, (Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180});
     }
 }
 
@@ -352,7 +370,7 @@ void DrawMapInfo(void)
     int y = 20;
     int lineHeight = 34;
     int fontSize = 30;
-    Color textColor = targetColors[hudColorIndex];
+    Color textColor = targetColors[gameEngine.hudColorIndex];
 
     // Display mapType if available (assuming 0 is invalid)
     if (targetEngine.mapType != 0) {
@@ -428,15 +446,15 @@ void InitTheme(const char *theme)
 
     // Normal: gray border, Focused: colored border, Pressed: colored border
     GuiSetStyle(BUTTON, BORDER_COLOR_NORMAL, ColorToInt((Color){120, 120, 120, 255}));
-    GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
-    GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, ColorToInt(targetColors[hudColorIndex]));
+    GuiSetStyle(BUTTON, BORDER_COLOR_FOCUSED, ColorToInt((Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180}));
+    GuiSetStyle(BUTTON, BORDER_COLOR_PRESSED, ColorToInt(targetColors[gameEngine.hudColorIndex]));
     GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt((Color){40, 40, 40, 255}));
     GuiSetStyle(BUTTON, BASE_COLOR_FOCUSED, ColorToInt((Color){40, 40, 40, 255}));
     GuiSetStyle(BUTTON, BASE_COLOR_PRESSED, ColorToInt((Color){60, 60, 60, 255}));
     
     GuiSetStyle(BUTTON, TEXT_COLOR_NORMAL, ColorToInt(RAYWHITE));
-    GuiSetStyle(BUTTON, TEXT_COLOR_FOCUSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
-    GuiSetStyle(BUTTON, TEXT_COLOR_PRESSED, ColorToInt((Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180}));
+    GuiSetStyle(BUTTON, TEXT_COLOR_FOCUSED, ColorToInt((Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180}));
+    GuiSetStyle(BUTTON, TEXT_COLOR_PRESSED, ColorToInt((Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180}));
 }
 
 void DrawTargets(void)
@@ -444,7 +462,7 @@ void DrawTargets(void)
     int n = targetEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        DrawSphere(targets[i].position, targetEngine.targetSize, targetColors[colorIndex]);
+        DrawSphere(targets[i].position, targetEngine.targetSize, targetColors[gameEngine.colorIndex]);
     }
 }
 
