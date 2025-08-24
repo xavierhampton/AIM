@@ -224,7 +224,7 @@ void DrawTargets(void)
     int n = targetEngine.targetCount;
     for (int i = 0; i < n; i++)
     {
-        DrawSphere(targets[i].position, targetEngine.sphereSize, targetColors[colorIndex]);
+        DrawSphere(targets[i].position, targetEngine.targetSize, targetColors[colorIndex]);
     }
 }
 

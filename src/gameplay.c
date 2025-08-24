@@ -24,6 +24,7 @@ void Gridshot(void);
 // Gameplay Screen Initialization logic
 void InitGameplayScreen(void)
 {
+    LoadMaps("resources/maps", MAX_ENGINES);
     InitDraw();
     InitTheme("DARK");
     InitEngine();
@@ -86,17 +87,18 @@ void InitEngine(void)
 {
     InitCamera();
 
+    //Initial Engine is 3x3 Gridshot
     targetEngine.time = 999.0f;
-    targetEngine.sphereSize = 0.45f;
+    targetEngine.targetSize = 0.45f;
     targetEngine.targetCount = 3;
     targetEngine.gap = 10;
     targetEngine.targetHealth = 1;
-
     targetEngine.minZ = 60;
     targetEngine.maxZ = 50;
-
     targetEngine.xVar = 30;
     targetEngine.yVar = 30;
+
+    targetEngine = engines[0];   
 
     targets = malloc(targetEngine.targetCount * sizeof(Target));
     for (int i = 0; i < targetEngine.targetCount; i++)
@@ -129,7 +131,7 @@ int CheckTargetHit(void)
         int n = targetEngine.targetCount;
         for (int i = 0; i < n; i++)
         {
-            RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.sphereSize);
+            RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.targetSize);
 
             if (sphereCollision.hit)
             {

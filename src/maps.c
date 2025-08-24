@@ -36,6 +36,7 @@ void Gridshot(void)
                     break;
                 }
                 maxFreq -= 1;
+                if (maxFreq == 0) {perror("Not Enough Space for Targets... Aborting");}
             }
 
 

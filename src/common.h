@@ -1,6 +1,6 @@
-
 #ifndef COMMON_H
 #define COMMON_H
+#define MAX_ENGINES 50
 
 #include "raylib.h"
 #include <stdio.h>
@@ -26,7 +26,7 @@ typedef struct target {
 
 typedef struct target_engine {
     float time;
-    float sphereSize;
+    float targetSize;
     int targetCount;
     int targetHealth;
 
@@ -58,12 +58,13 @@ extern GameScreen currentScreen;
 extern Font font;
 extern Music music;
 extern Sound fxCoin;
-
+extern TargetEngine engines[MAX_ENGINES];
 
 extern int menu;
 extern TargetEngine targetEngine;
 extern GameEngine gameEngine;
 extern Target* targets;
+
 
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions
@@ -101,6 +102,7 @@ void Gridshot(void);
 
 //parser
 void LoadSettings(const char *filename, GameEngine *engine);
+int LoadMaps(const char *dirPath, int maxEngines);
 
 
 #endif
