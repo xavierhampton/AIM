@@ -21,7 +21,7 @@ void Gridshot(void)
         {
             while (maxFreq > 0){
                 //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (targetEngine.xVar / 10)) - (int)(targetEngine.xVar / 20);
+                int x = (rand() % (targetEngine.xVar / 10)) - (int)(targetEngine.xVar / (2 * targetEngine.gap));
                 int y = (rand() % (targetEngine.yVar / 10)) + 1;
                 int z = targetEngine.maxZ / 10;
 
@@ -30,9 +30,6 @@ void Gridshot(void)
                 if (!checkInterference(pos)) {
                     Target newTarget = {pos, targetEngine.targetHealth};
                     targets[i] = newTarget;
-
-                    printf("%d %d %d \n",x, y, z );
-
                     break;
                 }
                 maxFreq -= 1;

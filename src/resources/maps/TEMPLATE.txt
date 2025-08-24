@@ -1,0 +1,14 @@
+// THIS IS A TEMPLATE, ALL MAPS MUST BE IN THIS FORMAT:
+// DISTANCE VALUES ARE SCALED BY 10
+
+time=00.0
+targetSize=0.00
+targetCount=0
+targetHealth=0
+
+gap=10
+xVar=30
+yVar=30
+
+minZ=50
+maxZ=50
