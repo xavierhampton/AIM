@@ -70,6 +70,9 @@ int FinishGameplayScreen(void)
 void InitCamera(void)
 {
     gameEngine.sensitivity = 1.0f;
+    gameEngine.volume = 1.0f;
+
+    LoadSettings("settings.txt", &gameEngine);
 
     //CAMERA SETTINGS
     gameEngine.camera.position = (Vector3){ 0.0f, 2.0f, 0.0f };

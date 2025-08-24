@@ -97,6 +97,12 @@ void UpdateGlobals(void);
 //maps
 void Gridshot(void);
 
+
+
+//parser
+void LoadSettings(const char *filename, GameEngine *engine);
+
+
 #endif
 
 
