@@ -21,7 +21,7 @@ void Gridshot(void)
         {
             while (maxFreq > 0){
                 //Attempt to create Target (maxFreq = 50)
-                int x = (rand() % (targetEngine.xVar / 10)) - 1;
+                int x = (rand() % (targetEngine.xVar / 10)) - (int)(targetEngine.xVar / 20);
                 int y = (rand() % (targetEngine.yVar / 10)) + 1;
                 int z = targetEngine.maxZ / 10;
 
