@@ -18,6 +18,7 @@
 //----------------------------------------------------------------------------------
 typedef enum GameScreen { UNKNOWN = -1, LOGO = 0, GAMEPLAY } GameScreen;
 enum MENU { MAIN, PAUSE, SETTINGS };
+enum MapTypes {GRIDSHOT = 0, TRACK};
 
 typedef struct target {
     Vector3 position;
@@ -25,7 +26,7 @@ typedef struct target {
 } Target;
 
 typedef struct target_engine {
-    float time;
+    int mapType;
     float targetSize;
     int targetCount;
     int targetHealth;
@@ -97,6 +98,7 @@ void UpdateGlobals(void);
 
 //maps
 void Gridshot(void);
+void Track(void);
 
 
 

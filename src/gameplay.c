@@ -88,7 +88,7 @@ void InitEngine(void)
     InitCamera();
 
     //Initial Engine is 3x3 Gridshot
-    targetEngine.time = 999.0f;
+    targetEngine.mapType = 0;
     targetEngine.targetSize = 0.45f;
     targetEngine.targetCount = 3;
     targetEngine.gap = 10;
@@ -107,8 +107,11 @@ void InitEngine(void)
         targets[i] = t;
     }
 
-    targetEngine.Update = Gridshot;
-
+    switch (targetEngine.mapType) 
+    {
+        case (GRIDSHOT):  targetEngine.Update = Gridshot; break;
+        case (TRACK): targetEngine.Update = Track; break;
+    }
 }
 
 void PollEvents(void)

@@ -61,7 +61,7 @@ int LoadMaps(const char *dirPath, int maxEngines) {
     }
 
     closedir(dir);
-    return count; // number of files loaded
+    return count; 
 }
 
 void LoadMap(const char *filename, TargetEngine *engine) {
@@ -79,8 +79,8 @@ void LoadMap(const char *filename, TargetEngine *engine) {
         char value[128];
 
         if (sscanf(line, "%63[^=]=%127s", key, value) == 2) {
-            if (strcmp(key, "time") == 0) {
-                engine->time = strtof(value, NULL);
+            if (strcmp(key, "mapType") == 0) {
+                engine->mapType = trtol(value, NULL, 10);
             }
             else if (strcmp(key, "targetSize") == 0) {
                 engine->targetSize = strtof(value, NULL);
