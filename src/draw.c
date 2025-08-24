@@ -7,7 +7,7 @@
 static Color targetColors[] = { {210, 210, 0, 255}, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE };
 static const char *colorNames[] = {"Dark Yellow", "Red", "Green", "Blue", "Yellow", "Orange", "Purple" };
 static int colorIndex = 0;
-static int hudColorIndex = 2;
+static int hudColorIndex = 6;
 
 static int centerX = {0};
 static int centerY = {0};
@@ -25,6 +25,7 @@ void DrawGUI(void);
 void DrawHUD(void);
 void DrawPauseMenu(void);
 void DrawTargets(void);
+void DrawMapSelector(void);
 
 void DrawSettingsMenu(void);
 
@@ -73,6 +74,7 @@ void DrawGUI(void)
 {
 
     DrawHUD();
+    
     if (menu == PAUSE)  { DrawPauseMenu(); }
     else if (menu == SETTINGS) { DrawSettingsMenu(); }
 
@@ -168,12 +170,15 @@ void DrawPauseMenu(void)
             menu = MAIN;
             DisableCursor();     
         }
+
+    DrawMapSelector();
    
 }
 
 
 void DrawSettingsMenu(void)
 {
+
     // Fade Overlay
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150});
 
@@ -241,6 +246,100 @@ void DrawSettingsMenu(void)
         SaveSettings();
     }
 }
+void DrawMapSelector(void)
+{
+    //----------------------------------------------------------------------------------
+    // Persistent State
+    //----------------------------------------------------------------------------------
+    static int selectedMap = 0;
+    static int scrollIndex = 0;
+
+    //----------------------------------------------------------------------------------
+    // Layout Settings
+    //----------------------------------------------------------------------------------
+    const int listWidth   = 500;
+    const int listHeight  = 435;
+    const int itemHeight  = 60;
+    const int visibleCount = 7;
+    const int padding      = 10;
+
+    //----------------------------------------------------------------------------------
+    // Example Map Data
+    //----------------------------------------------------------------------------------
+    static const char *mapNames[] = {
+        "Arena", "Desert", "Forest", "City",
+        "Space", "Ruins", "Cave", "Island"
+    };
+    const int mapCount = sizeof(mapNames) / sizeof(mapNames[0]);
+
+    //----------------------------------------------------------------------------------
+    // Positioning
+    //----------------------------------------------------------------------------------
+    int x = centerX + listWidth / 2 + (GetScreenHeight() / 12) + 20;
+    int y = GetScreenHeight() / 2  - listHeight / 2;
+
+    //----------------------------------------------------------------------------------
+    // Background
+    //----------------------------------------------------------------------------------
+    DrawRectangle(x, y, listWidth, listHeight, (Color){30, 30, 30, 200});
+
+    //----------------------------------------------------------------------------------
+    // Handle Scroll Input
+    //----------------------------------------------------------------------------------
+    int wheel = GetMouseWheelMove();
+    if (wheel != 0)
+    {
+        scrollIndex -= wheel;
+        if (scrollIndex < 0) scrollIndex = 0;
+        if (scrollIndex > mapCount - visibleCount) scrollIndex = mapCount - visibleCount;
+        if (scrollIndex < 0) scrollIndex = 0; // handles case where mapCount < visibleCount
+    }
+
+    //----------------------------------------------------------------------------------
+    // Draw Visible Maps
+    //----------------------------------------------------------------------------------
+    for (int i = 0; i < visibleCount && (i + scrollIndex) < mapCount; i++)
+    {
+        int itemIndex = i + scrollIndex;
+        int itemY = y + padding + i * itemHeight;
+        Rectangle itemRect = {x + padding, itemY, listWidth - 2 * padding, itemHeight - 4};
+
+        bool hovered    = CheckCollisionPointRec(GetMousePosition(), itemRect);
+        bool isSelected = (selectedMap == itemIndex);
+
+        // Background Color
+        Color bgColor = (Color){50, 50, 70, 120};
+        if (hovered)    bgColor = (Color){targetColors[hudColorIndex].r / 3, targetColors[hudColorIndex].g / 3, targetColors[hudColorIndex].b / 3, 180};
+        if (isSelected) bgColor = (Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180};
+
+        DrawRectangleRec(itemRect, bgColor);
+
+        // Text
+        DrawText(mapNames[itemIndex], itemRect.x + 12, itemRect.y + 8, 20, RAYWHITE);
+
+        // Selection
+        if (hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            selectedMap = itemIndex;
+            // TODO: Apply selected map
+        }
+    }
+
+    //----------------------------------------------------------------------------------
+    // Scrollbar
+    //----------------------------------------------------------------------------------
+    if (mapCount > visibleCount)
+    {
+        float barHeight = (float)listHeight * visibleCount / mapCount;
+        float barY = y + ((float)scrollIndex / (mapCount - visibleCount)) * (listHeight - barHeight);
+
+        DrawRectangle(x + listWidth - 8, y + 2, 6, listHeight - 4, (Color){40, 40, 40, 180});
+        DrawRectangle(x + listWidth - 8, barY + 2, 6, barHeight - 4, (Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180});
+    }
+}
+
+
+
 
 void UpdateGlobals(void)
 {

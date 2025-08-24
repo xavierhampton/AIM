@@ -1,2 +1,2 @@
 sensitivity=1.25
-volume=0.40
+volume=0.65
