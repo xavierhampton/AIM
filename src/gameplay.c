@@ -98,7 +98,7 @@ void InitEngine(void)
     targetEngine.xVar = 30;
     targetEngine.yVar = 30;
 
-    targetEngine = engines[1];   
+    targetEngine = engines[2];   
 
     targets = malloc(targetEngine.targetCount * sizeof(Target));
     for (int i = 0; i < targetEngine.targetCount; i++)

@@ -3,7 +3,7 @@
 // MAP TYPES: 0 = GRIDSHOT, 1 = TRACK
 
 
-mapType=0
+mapType=1
 targetSize=0.00
 targetCount=0
 targetHealth=0

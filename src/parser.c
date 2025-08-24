@@ -107,8 +107,9 @@ void LoadMap(const char *filename, TargetEngine *engine) {
                 engine->maxZ = strtol(value, NULL, 10);
             }
             else if (strcmp(key, "targetSpeed") == 0) {
-                engine->maxZ = strtol(value, NULL, 10);
+                engine->targetSpeed = strtol(value, NULL, 10);
             }
+
         }
     }
 

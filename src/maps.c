@@ -47,31 +47,34 @@ void Gridshot(void)
 static int dir = 1;
 void Track(void) 
 {
+    
     if (targets[0].health <= 0) 
     {
-        Vector3 pos = {0, targetEngine.yVar, targetEngine.maxZ};
+        printf("AA");
+        Vector3 pos = {0, targetEngine.yVar/ 10 + 1, targetEngine.maxZ / 10};
         targets[0] = (Target){pos, targetEngine.targetHealth};
     }
 
     Target old = targets[0];
-    Target new = { 0 };
     float delta = GetFrameTime();
     float speed = targetEngine.targetSpeed / 10;
 
-    if (dir == 1 && old.position.x > targetEngine.xVar)
+    if (dir == 1 && old.position.x > (targetEngine.xVar / 10))
     {
-        old.position.x = targetEngine.xVar;
+        old.position.x = targetEngine.xVar / 10;
         dir = -1;
     }
 
-    else if (dir == -1 && old.position.x < -targetEngine.xVar)
+    else if (dir == -1 && old.position.x < -(targetEngine.xVar / 10))
     {
-        old.position.x = -targetEngine.xVar;
+        old.position.x = -(targetEngine.xVar / 10);
         dir = 1;
     }
 
     Vector3 pos = (Vector3){old.position.x + (dir * delta * speed), old.position.y, old.position.z};
-    new = (Target){pos, old.health};
+    printf("dir=%d, delta=%.4f, speed=%.4f\n", dir, delta, speed);
+    printf("Target position: x=%.2f, y=%.2f, z=%.2f\n", pos.x, pos.y, pos.z);
+    targets[0].position = pos;
     
 }
 
