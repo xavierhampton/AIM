@@ -26,7 +26,7 @@ void DrawHUD(void);
 void DrawPauseMenu(void);
 void DrawTargets(void);
 void DrawMapSelector(void);
-
+void DrawMapInfo(void);
 void DrawSettingsMenu(void);
 
 void InitDraw(void) {
@@ -172,6 +172,7 @@ void DrawPauseMenu(void)
         }
 
     DrawMapSelector();
+    DrawMapInfo();
    
 }
 
@@ -184,10 +185,9 @@ void DrawSettingsMenu(void)
 
     // Menu dimensions
     int menuWidth = 600;
-    int menuHeight = 450;
+    int menuHeight = 550;
     int menuX = centerX - menuWidth / 2;
     int menuY = centerY - menuHeight / 2;
-
 
     // Group Box
     GuiSetStyle(DEFAULT, TEXT_SIZE, 40);
@@ -202,7 +202,6 @@ void DrawSettingsMenu(void)
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     GuiSetStyle(DEFAULT, TEXT_SPACING, 3);
 
-    
     // --------------------
     // Master Volume Slider
 
@@ -216,7 +215,6 @@ void DrawSettingsMenu(void)
     DrawText("Mouse Sensitivity", centerX - MeasureText("Mouse Sensitivity", 20)/2, sensY, 20, RAYWHITE);
     GuiSliderBar((Rectangle){centerX - controlWidth/2, sensY + 30, controlWidth, controlHeight},
                  NULL, TextFormat("%.2f", gameEngine.sensitivity), &gameEngine.sensitivity, 0.1f, 3.0f);
-
 
     // --------------------
     // Target Color Arrow Picker
@@ -239,7 +237,26 @@ void DrawSettingsMenu(void)
     DrawText(colorNames[colorIndex], centerX - MeasureText(colorNames[colorIndex], 20)/2, colorY + 40, 20, BLACK);
 
     // --------------------
-    // Back button
+    // HUD Color Arrow Picker
+    int hudColorY = colorY + spacingY;
+    DrawText("HUD Color", centerX - MeasureText("HUD Color", 20)/2, hudColorY, 20, RAYWHITE);
+
+    if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, hudColorY + 30, 40, controlHeight}, "<"))
+    {
+        hudColorIndex--;
+        if (hudColorIndex < 0) hudColorIndex = 6;
+    }
+    if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, hudColorY + 30, 40, controlHeight}, ">"))
+    {
+        hudColorIndex++;
+        if (hudColorIndex > 6) hudColorIndex = 0;
+    }
+
+    // HUD color preview rectangle
+    DrawRectangle(centerX - controlWidth / 2, hudColorY + 30, controlWidth, controlHeight, targetColors[hudColorIndex]);
+    DrawText(colorNames[hudColorIndex], centerX - MeasureText(colorNames[hudColorIndex], 20)/2, hudColorY + 40, 20, BLACK);
+
+
     if (GuiButton((Rectangle){centerX - 100, menuY + menuHeight - 70, 200, 50}, "Back"))
     {
         menu = PAUSE;
@@ -248,44 +265,31 @@ void DrawSettingsMenu(void)
 }
 void DrawMapSelector(void)
 {
-    //----------------------------------------------------------------------------------
-    // Persistent State
-    //----------------------------------------------------------------------------------
+
     static int selectedMap = 0;
     static int scrollIndex = 0;
 
-    //----------------------------------------------------------------------------------
-    // Layout Settings
-    //----------------------------------------------------------------------------------
     const int listWidth   = 500;
     const int listHeight  = 435;
     const int itemHeight  = 60;
     const int visibleCount = 7;
     const int padding      = 10;
 
-    //----------------------------------------------------------------------------------
-    // Example Map Data
-    //----------------------------------------------------------------------------------
+
     static const char *mapNames[] = {
         "Arena", "Desert", "Forest", "City",
         "Space", "Ruins", "Cave", "Island"
     };
     const int mapCount = sizeof(mapNames) / sizeof(mapNames[0]);
 
-    //----------------------------------------------------------------------------------
-    // Positioning
-    //----------------------------------------------------------------------------------
+
     int x = centerX + listWidth / 2 + (GetScreenHeight() / 12) + 20;
     int y = GetScreenHeight() / 2  - listHeight / 2;
 
-    //----------------------------------------------------------------------------------
-    // Background
-    //----------------------------------------------------------------------------------
+
     DrawRectangle(x, y, listWidth, listHeight, (Color){30, 30, 30, 200});
 
-    //----------------------------------------------------------------------------------
-    // Handle Scroll Input
-    //----------------------------------------------------------------------------------
+
     int wheel = GetMouseWheelMove();
     if (wheel != 0)
     {
@@ -295,9 +299,7 @@ void DrawMapSelector(void)
         if (scrollIndex < 0) scrollIndex = 0; // handles case where mapCount < visibleCount
     }
 
-    //----------------------------------------------------------------------------------
-    // Draw Visible Maps
-    //----------------------------------------------------------------------------------
+
     for (int i = 0; i < visibleCount && (i + scrollIndex) < mapCount; i++)
     {
         int itemIndex = i + scrollIndex;
@@ -325,9 +327,7 @@ void DrawMapSelector(void)
         }
     }
 
-    //----------------------------------------------------------------------------------
-    // Scrollbar
-    //----------------------------------------------------------------------------------
+
     if (mapCount > visibleCount)
     {
         float barHeight = (float)listHeight * visibleCount / mapCount;
@@ -335,6 +335,66 @@ void DrawMapSelector(void)
 
         DrawRectangle(x + listWidth - 8, y + 2, 6, listHeight - 4, (Color){40, 40, 40, 180});
         DrawRectangle(x + listWidth - 8, barY + 2, 6, barHeight - 4, (Color){targetColors[hudColorIndex].r, targetColors[hudColorIndex].g, targetColors[hudColorIndex].b, 180});
+    }
+}
+
+void DrawMapInfo(void)
+{
+    int x = 20;
+    int y = 20;
+    int lineHeight = 34;
+    int fontSize = 30;
+    Color textColor = targetColors[hudColorIndex];
+
+    // Display mapType if available (assuming 0 is invalid)
+    if (targetEngine.mapType != 0) {
+        DrawText(TextFormat("Map Type: %d", targetEngine.mapType), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display targetSize if non-zero
+    if (targetEngine.targetSize != 0.0f) {
+        DrawText(TextFormat("Target Size: %.2f", targetEngine.targetSize), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display targetCount if non-zero
+    if (targetEngine.targetCount != 0) {
+        DrawText(TextFormat("Target Count: %d", targetEngine.targetCount), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display targetHealth if non-zero
+    if (targetEngine.targetHealth != 0) {
+        DrawText(TextFormat("Target Health: %d", targetEngine.targetHealth), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display targetSpeed if non-zero
+    if (targetEngine.targetSpeed != 0) {
+        DrawText(TextFormat("Target Speed: %d", targetEngine.targetSpeed), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display gap if non-zero
+    if (targetEngine.gap != 0.0f) {
+        DrawText(TextFormat("Gap: %d", targetEngine.gap), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display xVar if non-zero
+    if (targetEngine.xVar != 0) {
+        DrawText(TextFormat("X Var: %d", targetEngine.xVar), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display yVar if non-zero
+    if (targetEngine.yVar != 0) {
+        DrawText(TextFormat("Y Var: %d", targetEngine.yVar), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display minZ if non-zero
+    if (targetEngine.minZ != 0) {
+        DrawText(TextFormat("Min Z: %d", targetEngine.minZ), x, y, fontSize, textColor);
+        y += lineHeight;
+    }
+    // Display maxZ if non-zero
+    if (targetEngine.maxZ != 0) {
+        DrawText(TextFormat("Max Z: %d", targetEngine.maxZ), x, y, fontSize, textColor);
+        y += lineHeight;
     }
 }
 
