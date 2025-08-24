@@ -116,3 +116,18 @@ void LoadMap(const char *filename, TargetEngine *engine) {
     fclose(file);
 }
 
+void SaveSettings() {
+    const char *filename = "settings.txt";
+    GameEngine* engine = &gameEngine;
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        printf("Failed to open %s for writing\n", filename);
+        return;
+    }
+
+    fprintf(file, "sensitivity=%.2f\n", engine->sensitivity);
+    fprintf(file, "volume=%.2f\n", engine->volume);
+
+    fclose(file);
+}
+

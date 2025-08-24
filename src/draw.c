@@ -198,6 +198,7 @@ void DrawSettingsMenu(void)
     if (GuiButton((Rectangle){centerX - 100, menuY + menuHeight - 70, 200, 50}, "Back"))
     {
         menu = PAUSE;
+        SaveSettings();
     }
 }
 

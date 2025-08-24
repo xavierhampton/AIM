@@ -121,7 +121,7 @@ void PollEvents(void)
         menu = (menu == PAUSE || menu == SETTINGS) ? MAIN : PAUSE;
 
         if (menu == PAUSE) {EnableCursor();}
-        else {DisableCursor();}
+        else {DisableCursor(); SaveSettings();}
 
     }
 

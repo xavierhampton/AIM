@@ -106,6 +106,7 @@ void Track(void);
 //parser
 void LoadSettings(const char *filename, GameEngine *engine);
 int LoadMaps(const char *dirPath, int maxEngines);
+void SaveSettings(void);
 
 
 #endif
