@@ -49,6 +49,9 @@ typedef struct game_engine {
 
     float sensitivity;
     float volume;
+    float timer;
+    int hits;
+    int shots;
 
 }GameEngine;
 

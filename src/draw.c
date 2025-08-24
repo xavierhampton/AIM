@@ -80,22 +80,62 @@ void DrawGUI(void)
 
 void DrawHUD(void)
 {
-    int padding = 30;
-    int gap = 45;
+    int arrowTexWidth = 256;
+    int arrowTexHeight = 64;
+    static Texture2D arrowsTex = {0};
+    if (arrowsTex.id == 0) {
+        arrowsTex = LoadTexture("resources/textures/arrows03.png");
+        arrowTexWidth = arrowsTex.width;
+        arrowTexHeight = arrowsTex.height;
+    } else {
+        arrowTexWidth = arrowsTex.width;
+        arrowTexHeight = arrowsTex.height;
+    }
 
-    int spacing = 40;
+    // Big Arrow Texture
+    int texX = GetScreenWidth() / 2 - arrowTexWidth / 2;
+    int texY = 20;
+    DrawTexture(arrowsTex, texX, texY, WHITE);
 
-    //Fade Overlay
-    DrawRectangle(0, 0, 235, 155, (Color){ 0, 0, 0, 150 });
+    // Timer Text
+    char timerText[16];
+    snprintf(timerText, sizeof(timerText), "%.2f", gameEngine.timer);
+    int timerFontSize = 46;
+    int timerTextWidth = MeasureText(timerText, timerFontSize);
+    int timerTextX = GetScreenWidth() / 2 - timerTextWidth / 2;
+    int timerTextY = texY + arrowTexHeight / 2 - timerFontSize / 2;
+    DrawText(timerText, timerTextX, timerTextY, timerFontSize, targetColors[hudColorIndex]);
 
-    DrawText("Time:", padding, padding, 30, targetColors[hudColorIndex]);
-    DrawText("00.00", gap + MeasureText("Time:", 30), padding, 30, RAYWHITE);
+    // Small Arrow Textures for Hits/Accuracy
+    float smallScale = 0.5f;
+    int smallArrowWidth = (int)(arrowTexWidth * smallScale);
+    int smallArrowHeight = (int)(arrowTexHeight * smallScale);
+    int hitsArrowX = GetScreenWidth() / 2 - smallArrowWidth - 20 - (arrowTexWidth / 2);
+    int accArrowX = GetScreenWidth() / 2 + 20 + (arrowTexWidth / 2);
+    int arrowsY = texY + 2;
 
-    DrawText("Hit:", padding, spacing + padding, 30, targetColors[hudColorIndex]);
-    DrawText("0", gap + MeasureText("Hit:", 30), spacing + padding, 30, RAYWHITE);
+    DrawTextureEx(arrowsTex, (Vector2){hitsArrowX, arrowsY}, 0.0f, smallScale, WHITE);
+    DrawTextureEx(arrowsTex, (Vector2){accArrowX, arrowsY}, 0.0f, smallScale, WHITE);
 
-    DrawText("Acc:", padding, spacing * 2 + padding, 30, targetColors[hudColorIndex]);
-    DrawText("0", gap + MeasureText("Acc:", 30), spacing * 2 + padding, 30, RAYWHITE);
+    //Hits Text
+    char hitsText[16];
+    snprintf(hitsText, sizeof(hitsText), "%d", gameEngine.hits);
+    int hitsFontSize = 30;
+    int hitsTextWidth = MeasureText(hitsText, hitsFontSize);
+    int hitsTextX = hitsArrowX + smallArrowWidth / 2 - hitsTextWidth / 2;
+    int hitsTextY =  2 + arrowsY + smallArrowHeight / 2 - hitsFontSize / 2;
+    DrawText(hitsText, hitsTextX, hitsTextY, hitsFontSize, targetColors[hudColorIndex]);
+
+    //Accuracy Text
+    char accText[16];
+    float accuracy = (gameEngine.shots > 0) ? (100.0f * (float)gameEngine.hits / (float)gameEngine.shots) : 0.0f;
+    snprintf(accText, sizeof(accText), "%.2f", accuracy);
+    int accFontSize = 24;
+    int accTextWidth = MeasureText(accText, accFontSize);
+    int accTextX = accArrowX + smallArrowWidth / 2 - accTextWidth / 2;
+    int accTextY =  2 + arrowsY + smallArrowHeight / 2 - accFontSize / 2;
+    DrawText(accText, accTextX, accTextY, accFontSize, targetColors[hudColorIndex]);
+
 
 }
     

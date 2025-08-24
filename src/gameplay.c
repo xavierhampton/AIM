@@ -72,6 +72,9 @@ void InitCamera(void)
 {
     gameEngine.sensitivity = 1.0f;
     gameEngine.volume = 1.0f;
+    gameEngine.timer = 0.00;
+    gameEngine.hits = 0;
+    gameEngine.shots = 0;
 
     LoadSettings("settings.txt", &gameEngine);
 
@@ -81,6 +84,7 @@ void InitCamera(void)
     gameEngine.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     gameEngine.camera.fovy = 70.53f;
     gameEngine.camera.projection = CAMERA_CUSTOM;
+
 }
 
 void InitEngine(void) 
@@ -129,7 +133,7 @@ void PollEvents(void)
 
 int CheckTargetHit(void)
 {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && menu == MAIN)
+    if (menu == MAIN)
     {
         int n = targetEngine.targetCount;
         for (int i = 0; i < n; i++)
@@ -138,10 +142,24 @@ int CheckTargetHit(void)
 
             if (sphereCollision.hit)
             {
+                if (targetEngine.mapType == GRIDSHOT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {     
+                    PlaySound(fxCoin);
+                    targets[i].health -= 1;
+                    return i; 
+                }
+                else if ((targetEngine.mapType == TRACK && IsMouseButtonDown(MOUSE_BUTTON_LEFT)))
+                {
+                    static float cumTime = 0.00;
+                    cumTime += GetFrameTime();
+                    if (cumTime >= 0.10)
+                    {
+                        cumTime = 0;
+                        PlaySound(fxCoin);
+                    }
+                   
+                }
 
-                PlaySound(fxCoin);
-                targets[i].health -= 1;
-                return i; // Return the index of the hit sphere
 
             }
         }

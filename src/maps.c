@@ -50,7 +50,6 @@ void Track(void)
     
     if (targets[0].health <= 0) 
     {
-        printf("AA");
         Vector3 pos = {0, targetEngine.yVar/ 10 + 1, targetEngine.maxZ / 10};
         targets[0] = (Target){pos, targetEngine.targetHealth};
     }
