@@ -78,7 +78,7 @@ void InitEngine(int x)
     targetEngine.xVar = 30;
     targetEngine.yVar = 30;
 
-    targetEngine = engines[x];   
+    targetEngine = engines[gameEngine.mapIndex];   
 
     targets = malloc(targetEngine.targetCount * sizeof(Target));
     for (int i = 0; i < targetEngine.targetCount; i++)
@@ -106,6 +106,7 @@ void InitCamera(void)
     gameEngine.timer = 0.00;
     gameEngine.hits = 0;
     gameEngine.shots = 0;
+    gameEngine.mapIndex = 0;
 
     gameEngine.colorIndex = 0;
     gameEngine.hudColorIndex = 6;

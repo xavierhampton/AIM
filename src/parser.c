@@ -35,6 +35,9 @@ void LoadSettings(const char *filename, GameEngine *engine) {
             else if (strcmp(key, "crosshairColorIndex") == 0) {
                 engine->crosshairColorIndex = strtol(value, NULL, 10);
             }
+            else if (strcmp(key, "mapIndex") == 0) {
+                engine->mapIndex = strtol(value, NULL, 10);
+            }
            
         }
     }
@@ -143,6 +146,8 @@ void SaveSettings() {
     fprintf(file, "colorIndex=%d\n", engine->colorIndex);
     fprintf(file, "hudColorIndex=%d\n", engine->hudColorIndex);
     fprintf(file, "crosshairColorIndex=%d\n", engine->crosshairColorIndex);
+    fprintf(file, "mapIndex=%d\n", engine->mapIndex);
+
 
     fclose(file);
 }

@@ -3,3 +3,4 @@ volume=0.32
 colorIndex=1
 hudColorIndex=6
 crosshairColorIndex=7
+mapIndex=2
