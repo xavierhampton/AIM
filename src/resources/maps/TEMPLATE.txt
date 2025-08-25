@@ -2,15 +2,27 @@
 // DISTANCE VALUES ARE SCALED BY 10
 // MAP TYPES: 0 = GRIDSHOT, 1 = TRACK
 
+//GRID SHOT
+///////////////
 
-mapType=1
+title=XXX
+mapType=0
 targetSize=0.00
 targetCount=0
 targetHealth=0
-
 gap=10
 xVar=30
 yVar=30
-
 minZ=50
+maxZ=50
+
+//TRACK SHOT
+//////////////////
+
+title=XXX
+mapType=1
+targetSize=0.00
+
+xVar=30
+yVar=30
 maxZ=50

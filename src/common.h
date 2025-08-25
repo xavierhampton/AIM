@@ -26,6 +26,7 @@ typedef struct target {
 } Target;
 
 typedef struct target_engine {
+    char* title;
     int mapType;
     float targetSize;
     int targetCount;
@@ -50,7 +51,7 @@ typedef struct game_engine {
     int colorIndex;
     int hudColorIndex;
     int crosshairColorIndex;
-    
+
     float sensitivity;
     float volume;
 

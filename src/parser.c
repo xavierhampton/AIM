@@ -118,6 +118,10 @@ void LoadMap(const char *filename, TargetEngine *engine) {
             else if (strcmp(key, "targetSpeed") == 0) {
                 engine->targetSpeed = strtol(value, NULL, 10);
             }
+            else if (strcmp(key, "title") == 0) {
+                strncpy(engine->title, value, sizeof(engine->title) - 1);
+                engine->title[sizeof(engine->title) - 1] = '\0';
+            }
 
         }
     }
