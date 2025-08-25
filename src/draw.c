@@ -61,7 +61,11 @@ void DrawMap(void)
     rlEnableBackfaceCulling();
 
     //FLOOR
-    DrawGrid(12, 0.5f);
+    DrawCubeWires((Vector3){0,0,0}, 1.0, 0.01, 1.0, targetColors[gameEngine.hudColorIndex]);
+    DrawCubeWires((Vector3){0,0,0}, 2.0, 0.01, 2.0, targetColors[gameEngine.hudColorIndex]);
+    DrawCubeWires((Vector3){0,0,0}, 3.0, 0.01, 3.0, targetColors[gameEngine.hudColorIndex]);
+
+
 
     //SPHERES
     DrawTargets();
