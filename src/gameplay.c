@@ -37,7 +37,16 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(void)
 {
-    if (menu == MAIN) {UpdateMouse();}
+    if (menu == MAIN) 
+    {
+        UpdateMouse();
+        //START TIMER IF PLAYER STARTS
+        if (gameEngine.hits > 0)
+        {
+            gameEngine.timer += GetFrameTime();
+        }
+    }
+
     targetEngine.Update();
 
     PollEvents();
@@ -159,7 +168,11 @@ int CheckTargetHit(void)
                     break;
                 }
             }
-            gameEngine.shots += 1;
+            if (gameEngine.hits > 0)
+            {
+                gameEngine.shots += 1;
+            }
+            
         }
         else if (targetEngine.mapType == TRACK && IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
@@ -177,7 +190,10 @@ int CheckTargetHit(void)
                         PlaySound(fxCoin);
                     }
                 }
-                gameEngine.shots += 1;
+                if (gameEngine.hits > 0)
+                {
+                    gameEngine.shots += 1;
+                }
             }
         }
     }
