@@ -373,6 +373,12 @@ void DrawMapInfo(void)
     Color textColor = targetColors[gameEngine.hudColorIndex];
 
     // Display mapType if available (assuming 0 is invalid)
+    
+    // Display map title if available
+    if (targetEngine.title && targetEngine.title[0] != '\0') {
+        DrawText(targetEngine.title, x, y, fontSize, textColor);
+        y += lineHeight;
+    }
     if (targetEngine.mapType != 0) {
         DrawText(TextFormat("Map Type: %d", targetEngine.mapType), x, y, fontSize, textColor);
         y += lineHeight;

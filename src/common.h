@@ -26,7 +26,7 @@ typedef struct target {
 } Target;
 
 typedef struct target_engine {
-    char* title;
+    char title[64];
     int mapType;
     float targetSize;
     int targetCount;
