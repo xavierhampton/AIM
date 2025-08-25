@@ -300,7 +300,7 @@ void DrawMapSelector(void)
     static int scrollIndex = 0;
 
     const int listWidth   = 500;
-    const int listHeight  = 350;
+    const int listHeight  = 435;
     const int itemHeight  = 60;
     const int visibleCount = 7;
     const int padding      = 10;
@@ -344,6 +344,10 @@ void DrawMapSelector(void)
         // Selection
         if (hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
+            gameEngine.timer = 0.00;
+            gameEngine.hits = 0;
+            gameEngine.shots = 0;
+            
             selectedMap = itemIndex;
             gameEngine.mapIndex = selectedMap;
             InitEngine(selectedMap);

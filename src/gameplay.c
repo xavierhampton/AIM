@@ -143,31 +143,41 @@ int CheckTargetHit(void)
     if (menu == MAIN)
     {
         int n = targetEngine.targetCount;
-        for (int i = 0; i < n; i++)
-        {
-            RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.targetSize);
 
-            if (sphereCollision.hit)
+        if (targetEngine.mapType == GRIDSHOT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            int hitAny = 0;
+            for (int i = 0; i < n; i++)
             {
-                if (targetEngine.mapType == GRIDSHOT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-                {     
+                RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.targetSize);
+                if (sphereCollision.hit && targets[i].health > 0)
+                {
                     PlaySound(fxCoin);
                     targets[i].health -= 1;
-                    return i; 
+                    gameEngine.hits += 1;
+                    hitAny = 1;
+                    break;
                 }
-                else if ((targetEngine.mapType == TRACK && IsMouseButtonDown(MOUSE_BUTTON_LEFT)))
+            }
+            gameEngine.shots += 1;
+        }
+        else if (targetEngine.mapType == TRACK && IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            static float cumTime = 0.00;
+            cumTime += GetFrameTime();
+            if (cumTime >= 0.10)
+            {
+                cumTime = 0;
+                for (int i = 0; i < n; i++)
                 {
-                    static float cumTime = 0.00;
-                    cumTime += GetFrameTime();
-                    if (cumTime >= 0.10)
+                    RayCollision sphereCollision = GetRayCollisionSphere(gameEngine.mouseRay, targets[i].position, targetEngine.targetSize);
+                    if (sphereCollision.hit)
                     {
-                        cumTime = 0;
+                        gameEngine.hits += 1;
                         PlaySound(fxCoin);
                     }
-                   
                 }
-
-
+                gameEngine.shots += 1;
             }
         }
     }
