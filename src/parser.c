@@ -66,10 +66,10 @@ int LoadMaps(const char *dirPath, int maxEngines) {
         LoadMap(path, &engines[count]);
 
         count++;
-        printf("AA\n\n");
     }
 
     closedir(dir);
+    engineCount = count;
     return count; 
 }
 

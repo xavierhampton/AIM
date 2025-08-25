@@ -72,9 +72,11 @@ extern Sound fxCoin;
 extern TargetEngine engines[MAX_ENGINES];
 
 extern int menu;
+extern int engineCount;
 extern TargetEngine targetEngine;
 extern GameEngine gameEngine;
 extern Target* targets;
+
 
 
 #ifdef __cplusplus
@@ -91,6 +93,7 @@ void UpdateGameplayScreen(void);
 void DrawGameplayScreen(void);
 void UnloadGameplayScreen(void);
 int FinishGameplayScreen(void);
+void InitEngine(int a);
 
 // draw
 #ifndef DRAW_H

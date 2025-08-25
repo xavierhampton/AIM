@@ -10,7 +10,7 @@ static int finishScreen = 0;
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
 
-void InitEngine(void);
+void InitEngine(int x);
 void InitCamera(void);
 void InitTheme(const char* theme);
 
@@ -25,7 +25,8 @@ void Gridshot(void);
 void InitGameplayScreen(void)
 {
     LoadMaps("resources/maps", MAX_ENGINES);
-    InitEngine();
+    InitCamera();
+    InitEngine(0);
     InitDraw();
     InitTheme("DARK");
 
@@ -64,6 +65,35 @@ int FinishGameplayScreen(void)
     return finishScreen;
 }
 
+void InitEngine(int x) 
+{
+    //Initial Engine is 3x3 Gridshot
+    targetEngine.mapType = 0;
+    targetEngine.targetSize = 0.45f;
+    targetEngine.targetCount = 3;
+    targetEngine.gap = 10;
+    targetEngine.targetHealth = 1;
+    targetEngine.minZ = 60;
+    targetEngine.maxZ = 50;
+    targetEngine.xVar = 30;
+    targetEngine.yVar = 30;
+
+    targetEngine = engines[x];   
+
+    targets = malloc(targetEngine.targetCount * sizeof(Target));
+    for (int i = 0; i < targetEngine.targetCount; i++)
+    {
+        Target t = {{0,0,0}, 0};
+        targets[i] = t;
+    }
+
+    switch (targetEngine.mapType) 
+    {
+        case (GRIDSHOT):  targetEngine.Update = Gridshot; break;
+        case (TRACK): targetEngine.Update = Track; break;
+    }
+}
+
 
 //----------------------------------------------------------------------------------
 // Private Functions
@@ -92,36 +122,7 @@ void InitCamera(void)
 
 }
 
-void InitEngine(void) 
-{
-    InitCamera();
 
-    //Initial Engine is 3x3 Gridshot
-    targetEngine.mapType = 0;
-    targetEngine.targetSize = 0.45f;
-    targetEngine.targetCount = 3;
-    targetEngine.gap = 10;
-    targetEngine.targetHealth = 1;
-    targetEngine.minZ = 60;
-    targetEngine.maxZ = 50;
-    targetEngine.xVar = 30;
-    targetEngine.yVar = 30;
-
-    targetEngine = engines[0];   
-
-    targets = malloc(targetEngine.targetCount * sizeof(Target));
-    for (int i = 0; i < targetEngine.targetCount; i++)
-    {
-        Target t = {{0,0,0}, 0};
-        targets[i] = t;
-    }
-
-    switch (targetEngine.mapType) 
-    {
-        case (GRIDSHOT):  targetEngine.Update = Gridshot; break;
-        case (TRACK): targetEngine.Update = Track; break;
-    }
-}
 
 void PollEvents(void)
 {

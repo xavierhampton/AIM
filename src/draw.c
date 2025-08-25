@@ -301,14 +301,6 @@ void DrawMapSelector(void)
     const int visibleCount = 7;
     const int padding      = 10;
 
-
-    static const char *mapNames[] = {
-        "Arena", "Desert", "Forest", "City",
-        "Space", "Ruins", "Cave", "Island"
-    };
-    const int mapCount = sizeof(mapNames) / sizeof(mapNames[0]);
-
-
     int x = centerX + listWidth / 2 + (GetScreenHeight() / 12) + 20;
     int y = GetScreenHeight() / 2  - listHeight / 2;
 
@@ -321,12 +313,12 @@ void DrawMapSelector(void)
     {
         scrollIndex -= wheel;
         if (scrollIndex < 0) scrollIndex = 0;
-        if (scrollIndex > mapCount - visibleCount) scrollIndex = mapCount - visibleCount;
-        if (scrollIndex < 0) scrollIndex = 0; // handles case where mapCount < visibleCount
+        if (scrollIndex > engineCount - visibleCount) scrollIndex = engineCount - visibleCount;
+        if (scrollIndex < 0) scrollIndex = 0; 
     }
 
 
-    for (int i = 0; i < visibleCount && (i + scrollIndex) < mapCount; i++)
+    for (int i = 0; i < visibleCount && (i + scrollIndex) < engineCount; i++)
     {
         int itemIndex = i + scrollIndex;
         int itemY = y + padding + i * itemHeight;
@@ -343,21 +335,21 @@ void DrawMapSelector(void)
         DrawRectangleRec(itemRect, bgColor);
 
         // Text
-        DrawText(mapNames[itemIndex], itemRect.x + 12, itemRect.y + 8, 20, RAYWHITE);
+        DrawText(engines[itemIndex].title, itemRect.x + 12, itemRect.y + 8, 20, RAYWHITE);
 
         // Selection
         if (hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             selectedMap = itemIndex;
-            // TODO: Apply selected map
+            InitEngine(selectedMap);
         }
     }
 
 
-    if (mapCount > visibleCount)
+    if (engineCount > visibleCount)
     {
-        float barHeight = (float)listHeight * visibleCount / mapCount;
-        float barY = y + ((float)scrollIndex / (mapCount - visibleCount)) * (listHeight - barHeight);
+        float barHeight = (float)listHeight * visibleCount / engineCount;
+        float barY = y + ((float)scrollIndex / (engineCount - visibleCount)) * (listHeight - barHeight);
 
         DrawRectangle(x + listWidth - 8, y + 2, 6, listHeight - 4, (Color){40, 40, 40, 180});
         DrawRectangle(x + listWidth - 8, barY + 2, 6, barHeight - 4, (Color){targetColors[gameEngine.hudColorIndex].r, targetColors[gameEngine.hudColorIndex].g, targetColors[gameEngine.hudColorIndex].b, 180});
