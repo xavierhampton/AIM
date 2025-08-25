@@ -145,6 +145,16 @@ void PollEvents(void)
 
     }
 
+    //RESET
+    if (IsKeyPressed(KEY_R))
+    {
+        InitEngine(gameEngine.mapIndex);
+        gameEngine.timer = 0.00;
+        gameEngine.hits = 0;
+        gameEngine.shots = 0;
+        gameEngine.mapIndex = 0;
+    }
+
 }
 
 int CheckTargetHit(void)

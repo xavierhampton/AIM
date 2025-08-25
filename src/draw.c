@@ -104,7 +104,7 @@ void DrawHUD(void)
 
     // Timer Text
     char timerText[16];
-    snprintf(timerText, sizeof(timerText), "%.2f", gameEngine.timer);
+    snprintf(timerText, sizeof(timerText), "%.1f", gameEngine.timer);
     int timerFontSize = 46;
     int timerTextWidth = MeasureText(timerText, timerFontSize);
     int timerTextX = GetScreenWidth() / 2 - timerTextWidth / 2;
@@ -347,7 +347,7 @@ void DrawMapSelector(void)
             gameEngine.timer = 0.00;
             gameEngine.hits = 0;
             gameEngine.shots = 0;
-            
+
             selectedMap = itemIndex;
             gameEngine.mapIndex = selectedMap;
             InitEngine(selectedMap);
