@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "rcamera.h"
-#include "common.h"
 #include "assert.h"
 #include "rlgl.h"
 #include "raymath.h"
 #include "math.h"
+
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition

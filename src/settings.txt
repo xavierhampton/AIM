@@ -1,4 +1,4 @@
-sensitivity=0.58
+sensitivity=0.20
 volume=0.32
 colorIndex=0
 hudColorIndex=6

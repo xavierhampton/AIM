@@ -218,35 +218,37 @@ float yaw = 0.0f;
 float pitch = 0.0f;
 
 // Call this every frame
+
 void UpdateMouse()
 {
-    Vector2 delta = GetMouseDelta();  
+    // Get raw delta
+    Vector2 delta = GetMouseDelta();
+    float dx = delta.x;
+    float dy = delta.y;
 
-    int mouseDPI = 800; 
+    // Sensitivity (adjust to taste)
+    float sens = gameEngine.sensitivity * 0.07f * DEG2RAD;
 
-    const float baseDPI = 800.0f;    
-    const float degPerCount = 0.07f; 
+    yaw   -= dx * sens;     // horizontal
+    pitch -= dy * sens;     // vertical (note the sign!)
 
-    float dpiScale = mouseDPI / baseDPI;
-
-    float dx = delta.x * gameEngine.sensitivity * degPerCount * dpiScale * DEG2RAD;
-    float dy = delta.y *  gameEngine.sensitivity * degPerCount * dpiScale * DEG2RAD;
-
-    yaw   -= dx;   
-    pitch += -dy;  
-
+    // Clamp pitch
     float pitchLimit = 89.0f * DEG2RAD;
     if (pitch > pitchLimit) pitch = pitchLimit;
     if (pitch < -pitchLimit) pitch = -pitchLimit;
 
+    // Forward vector from yaw/pitch
     Vector3 forward;
     forward.x = cosf(pitch) * sinf(yaw);
     forward.y = sinf(pitch);
     forward.z = cosf(pitch) * cosf(yaw);
 
     gameEngine.camera.target = Vector3Add(gameEngine.camera.position, forward);
-    Vector2 screenCenter = { GetScreenWidth()/2.0f, GetScreenHeight()/2.0f };
-    gameEngine.mouseRay = GetMouseRay(screenCenter, gameEngine.camera);
+
+    // Optional: create a ray for your game logic
+    gameEngine.mouseRay = (Ray){gameEngine.camera.position, forward};
 }
+
+
 
 

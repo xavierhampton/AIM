@@ -36,7 +36,7 @@ int main(void)
     SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     SetConfigFlags(FLAG_MSAA_4X_HINT); 
     InitWindow(screenWidth, screenHeight, "raylib game template");
-
+    
     InitAudioDevice();      // Initialize audio device
 
     // Load global data (assets that must be available in all screens, i.e. font)
