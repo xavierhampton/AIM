@@ -230,7 +230,7 @@ void DrawSettingsMenu(void)
     int fpsY = sensY + spacingY;
 
     // Options as single string separated by semicolons
-    static const char *fpsText = "30;60;120;144;165;240;300;600";
+    static const char *fpsText = "30;60;120;144;165;240;300;600;Uncapped";
     int currentFpsIndex = gameEngine.currentFpsIndex;
     static bool fpsDropdownOpen = false;
         DrawText("Max FPS", centerX - MeasureText("Max FPS", 20)/2, fpsY, 20, RAYWHITE);
@@ -323,8 +323,8 @@ void DrawSettingsMenu(void)
         fpsDropdownOpen
     );
 
-    int fpsValues[] = {30, 60, 120, 144, 165, 240, 300, 600};
-    if (gameEngine.maxFPS != fpsValues[currentFpsIndex]) {fpsDropdownOpen = !fpsDropdownOpen;}
+    int fpsValues[] = {30, 60, 120, 144, 165, 240, 300, 600, 10000};
+    if (gameEngine.maxFPS != fpsValues[currentFpsIndex]) {fpsDropdownOpen = !fpsDropdownOpen;     SetTargetFPS(fpsValues[currentFpsIndex]);}
     gameEngine.maxFPS = fpsValues[currentFpsIndex];
     gameEngine.currentFpsIndex = currentFpsIndex;
 

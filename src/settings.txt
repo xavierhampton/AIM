@@ -1,8 +1,8 @@
-sensitivity=0.20
+sensitivity=0.95
 volume=0.32
 colorIndex=0
 hudColorIndex=6
 crosshairColorIndex=7
-mapIndex=1
+mapIndex=0
 maxFPS=600
 currentFpsIndex=7

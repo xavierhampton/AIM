@@ -54,28 +54,29 @@ void Track(void)
         targets[0] = (Target){pos, 9999};
     }
 
-    Target old = targets[0];
-    float delta = GetFrameTime();
-    float speed = targetEngine.targetSpeed / 10;
-
-    if (dir == 1 && old.position.x > (targetEngine.xVar / 10))
+    if ((gameEngine.timer > 0.00))
     {
-        old.position.x = targetEngine.xVar / 10;
-        dir = -1;
-    }
+        Target old = targets[0];
+        float delta = GetFrameTime();
+        float speed = targetEngine.targetSpeed / 10;
 
-    else if (dir == -1 && old.position.x < -(targetEngine.xVar / 10))
-    {
-        old.position.x = -(targetEngine.xVar / 10);
-        dir = 1;
-    }
+        targets[0].position.x += dir * delta * speed;
 
-    Vector3 pos = (Vector3){old.position.x + (dir * delta * speed), old.position.y, old.position.z};
-    printf("dir=%d, delta=%.4f, speed=%.4f\n", dir, delta, speed);
-    printf("Target position: x=%.2f, y=%.2f, z=%.2f\n", pos.x, pos.y, pos.z);
-    targets[0].position = pos;
+        if (dir == 1 && old.position.x > (targetEngine.xVar / 10))
+        {
+            old.position.x = targetEngine.xVar / 10;
+            dir = -1;
+        }
+
+        else if (dir == -1 && old.position.x < -(targetEngine.xVar / 10))
+        {
+            old.position.x = -(targetEngine.xVar / 10);
+            dir = 1;
+        }
+
     
 }
+    } 
 
 //----------------------------------------------------------------------------------
 // X Shot

@@ -29,6 +29,7 @@ void InitGameplayScreen(void)
     InitEngine(0);
     InitDraw();
     InitTheme("DARK");
+    SetTargetFPS(gameEngine.maxFPS);
 
 
     DisableCursor();
@@ -48,7 +49,6 @@ void UpdateGameplayScreen(void)
     }
 
     targetEngine.Update();
-    SetTargetFPS(gameEngine.maxFPS);
     PollEvents();
     UpdateGlobals();
     int target = CheckTargetHit();

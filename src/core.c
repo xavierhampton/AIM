@@ -50,14 +50,14 @@ int main(void)
 
     // Setup and init first screen
     currentScreen = GAMEPLAY;
+    SetTargetFPS(0);
     InitGameplayScreen();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
 #else
-    SetTargetFPS(0);       // Set our game to run at 300 frames-per-second
+          // Set our game to run at 300 frames-per-second
     //--------------------------------------------------------------------------------------
-
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
