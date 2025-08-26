@@ -130,6 +130,9 @@ void InitCamera(void)
     gameEngine.camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     gameEngine.camera.fovy = 70.53f;
     gameEngine.camera.projection = CAMERA_CUSTOM;
+    SetSoundVolume(fxCoin, gameEngine.volume);
+    SetSoundVolume(gunShot, gameEngine.volume);
+
 
 }
 
@@ -211,12 +214,6 @@ int CheckTargetHit(void)
     return -1;
 }
 
-
-
-
-// Global camera angles
-float yaw = 0.0f;
-float pitch = 0.0f;
 
 // Call this every frame
 

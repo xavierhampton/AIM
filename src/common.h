@@ -72,6 +72,8 @@ extern GameScreen currentScreen;
 extern Font font;
 extern Music music;
 extern Sound fxCoin;
+extern Sound gunShot;
+
 extern TargetEngine engines[MAX_ENGINES];
 
 extern int menu;
@@ -79,6 +81,9 @@ extern int engineCount;
 extern TargetEngine targetEngine;
 extern GameEngine gameEngine;
 extern Target* targets;
+
+extern float yaw;
+extern float pitch;
 
 
 

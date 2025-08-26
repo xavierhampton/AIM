@@ -11,11 +11,13 @@ static int centerX = {0};
 static int centerY = {0};
 
 Model skybox = { 0 };
+Model gun = { 0 };
 
 //----------------------------------------------------------------------------------
 // Function Predefs
 //----------------------------------------------------------------------------------
 void InitDraw(void);
+void InitTheme(const char*);
 void UnloadDraw(void);
 void DrawCrosshair(void);
 void DrawMap(void);
@@ -26,16 +28,20 @@ void DrawTargets(void);
 void DrawMapSelector(void);
 void DrawMapInfo(void);
 void DrawSettingsMenu(void);
-void InitTheme(const char*);
+void DrawGun(void);
+
+
 
 void InitDraw(void) {
     skybox = LoadModel("resources/models/skybox.glb");
+    gun = LoadModel("resources/models/pistol.glb");
     assert(skybox.meshCount > 0);
 
 }
 
 void UnloadDraw(void) {
     UnloadModel(skybox);
+    UnloadModel(gun);
 }
 
 void DrawCrosshair(void)
@@ -68,10 +74,11 @@ void DrawMap(void)
     //SPHERES
     DrawTargets();
 
+    DrawGun();
     EndMode3D();
     //DRAW FPS
     DrawText(TextFormat("%2i FPS", GetFPS()), 10, 10, 20, targetColors[gameEngine.hudColorIndex]);
-
+    
 }
 
 void DrawGUI(void)
@@ -509,4 +516,65 @@ void DrawTargets(void)
         DrawSphere(targets[i].position, targetEngine.targetSize, targetColors[gameEngine.colorIndex]);
     }
 }
+
+static float yawOffset = 0;
+const float maxYawOffset = (PI/12);
+static int oldShots = 0;
+static bool animPlaying = false;
+
+void AnimateGun(void)
+{
+    static float animSpeed = 12.0f;
+    static int dir = 1;
+    if (gameEngine.shots > oldShots)
+    {
+        yawOffset = 0;
+        dir = 1;
+        animPlaying = true;
+        animSpeed = 5.0;
+        oldShots = gameEngine.shots;
+        PlaySound(gunShot);
+    }
+   
+    if (yawOffset >= maxYawOffset)
+    {
+        yawOffset = maxYawOffset;
+        dir = -1;
+        animSpeed = animSpeed * 1.5;
+    }
+     if (yawOffset < 0)
+    {
+        yawOffset = 0;
+        animPlaying = false;
+    }
+
+    if (animPlaying) {
+        yawOffset += GetFrameTime() * animSpeed * dir * maxYawOffset;
+    }
+    
+}
+
+void DrawGun(void) {
+        Vector3 forward = Vector3Normalize(Vector3Subtract(gameEngine.camera.target, gameEngine.camera.position));
+        Vector3 right   = Vector3Normalize(Vector3CrossProduct(forward, gameEngine.camera.up));
+        Vector3 up      = gameEngine.camera.up;
+        Vector3 gunOffset = Vector3Add(
+            Vector3Add(
+                Vector3Scale(right, 0.5f),   // move right
+                Vector3Scale(up, -0.35f)      // move down
+            ),
+            Vector3Scale(forward, 0.3f)      // move forward
+        );
+
+        AnimateGun();
+        Vector3 gunPos = Vector3Add(gameEngine.camera.position, gunOffset);
+
+        Quaternion gunRot = QuaternionFromEuler(-pitch + PI/2  - yawOffset, yaw, 0.0f);
+        gun.transform = QuaternionToMatrix(gunRot);
+            DrawModelEx(gun, gunPos,
+                        (Vector3){0,1,0}, 0.0,     // yaw around Y
+                        (Vector3){1.3,1.3,1.3}, WHITE);
+
+}
+
 
