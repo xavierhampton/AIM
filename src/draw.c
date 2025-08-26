@@ -65,12 +65,12 @@ void DrawMap(void)
     DrawCubeWires((Vector3){0,0,0}, 2.0, 0.01, 2.0, targetColors[gameEngine.hudColorIndex]);
     DrawCubeWires((Vector3){0,0,0}, 3.0, 0.01, 3.0, targetColors[gameEngine.hudColorIndex]);
 
-
-
     //SPHERES
     DrawTargets();
 
     EndMode3D();
+    DrawFPS(10, 10); 
+
 }
 
 void DrawGUI(void)
@@ -171,7 +171,10 @@ void DrawPauseMenu(void)
         if (GuiButton((Rectangle){ centerX - buttonWidth / 2, (centerY - buttonHeight / 2) + gap, buttonWidth, buttonHeight }, "Quit"))
         {
             menu = MAIN;
-            DisableCursor();     
+            DisableCursor();  
+            CloseWindow();
+
+
         }
 
     DrawMapSelector();
