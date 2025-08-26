@@ -52,6 +52,8 @@ typedef struct game_engine {
     int hudColorIndex;
     int crosshairColorIndex;
     int mapIndex;
+    int maxFPS;
+    int currentFpsIndex;
 
     float sensitivity;
     float volume;

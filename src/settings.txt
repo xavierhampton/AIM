@@ -3,4 +3,6 @@ volume=0.32
 colorIndex=0
 hudColorIndex=6
 crosshairColorIndex=7
-mapIndex=0
+mapIndex=1
+maxFPS=600
+currentFpsIndex=7

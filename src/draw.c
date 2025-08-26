@@ -69,7 +69,8 @@ void DrawMap(void)
     DrawTargets();
 
     EndMode3D();
-    DrawFPS(10, 10); 
+    //DRAW FPS
+    DrawText(TextFormat("%2i FPS", GetFPS()), 10, 10, 20, targetColors[gameEngine.hudColorIndex]);
 
 }
 
@@ -191,7 +192,7 @@ void DrawSettingsMenu(void)
 
     // Menu dimensions
     int menuWidth = 600;
-    int menuHeight = 650;
+    int menuHeight = 780;
     int menuX = centerX - menuWidth / 2;
     int menuY = centerY - menuHeight / 2;
 
@@ -225,9 +226,22 @@ void DrawSettingsMenu(void)
                  NULL, TextFormat("%.2f", gameEngine.sensitivity), &gameEngine.sensitivity, 0.1f, 3.0f);
 
 
+    // -------------------- GUI DROP DOWN INI
+    int fpsY = sensY + spacingY;
+
+    // Options as single string separated by semicolons
+    static const char *fpsText = "30;60;120;144;165;240;300;600";
+    int currentFpsIndex = gameEngine.currentFpsIndex;
+    static bool fpsDropdownOpen = false;
+        DrawText("Max FPS", centerX - MeasureText("Max FPS", 20)/2, fpsY, 20, RAYWHITE);
+
+    Vector2 mousePoint = GetMousePosition();
+    Rectangle dropdownBounds = (Rectangle){centerX - controlWidth/2, fpsY + 30, controlWidth, controlHeight};
+
+
     // --------------------
     // Target Color Arrow Picker
-    int colorY = sensY + spacingY;
+    int colorY = fpsY + spacingY;
     DrawText("Target Color", centerX - MeasureText("Target Color", 20)/2, colorY, 20, RAYWHITE);
 
     if (GuiButton((Rectangle){centerX - controlWidth / 2 - 50, colorY + 30, 40, controlHeight}, "<"))
@@ -295,6 +309,25 @@ void DrawSettingsMenu(void)
         menu = PAUSE;
         SaveSettings();
     }
+
+    //////////GUI DROPDOWN LAST 
+    if (CheckCollisionPointRec(mousePoint, dropdownBounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        fpsDropdownOpen = !fpsDropdownOpen;
+    }
+    
+    GuiDropdownBox(
+        dropdownBounds,
+        fpsText,
+        &currentFpsIndex,
+        fpsDropdownOpen
+    );
+
+    int fpsValues[] = {30, 60, 120, 144, 165, 240, 300, 600};
+    if (gameEngine.maxFPS != fpsValues[currentFpsIndex]) {fpsDropdownOpen = !fpsDropdownOpen;}
+    gameEngine.maxFPS = fpsValues[currentFpsIndex];
+    gameEngine.currentFpsIndex = currentFpsIndex;
+
 }
 void DrawMapSelector(void)
 {

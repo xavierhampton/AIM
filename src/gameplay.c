@@ -48,7 +48,7 @@ void UpdateGameplayScreen(void)
     }
 
     targetEngine.Update();
-
+    SetTargetFPS(gameEngine.maxFPS);
     PollEvents();
     UpdateGlobals();
     int target = CheckTargetHit();
@@ -116,6 +116,7 @@ void InitCamera(void)
     gameEngine.hits = 0;
     gameEngine.shots = 0;
     gameEngine.mapIndex = 0;
+    gameEngine.maxFPS = 300;
 
     gameEngine.colorIndex = 0;
     gameEngine.hudColorIndex = 6;

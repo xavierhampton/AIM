@@ -32,7 +32,6 @@ int main(void)
 {
     // Initialization
     //---------------------------------------------------------
-    printf("Raylib version: %s\n", RAYLIB_VERSION);
     SetTraceLogLevel(LOG_DEBUG); 
     SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     SetConfigFlags(FLAG_MSAA_4X_HINT); 
@@ -56,7 +55,7 @@ int main(void)
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
 #else
-    SetTargetFPS(310);       // Set our game to run at 300 frames-per-second
+    SetTargetFPS(0);       // Set our game to run at 300 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop

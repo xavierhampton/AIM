@@ -38,6 +38,12 @@ void LoadSettings(const char *filename, GameEngine *engine) {
             else if (strcmp(key, "mapIndex") == 0) {
                 engine->mapIndex = strtol(value, NULL, 10);
             }
+            else if (strcmp(key, "maxFPS") == 0) {
+                engine->maxFPS = strtol(value, NULL, 10);
+            }
+            else if (strcmp(key, "currentFpsIndex") == 0) {
+                engine->currentFpsIndex = strtol(value, NULL, 10);
+            }
            
         }
     }
@@ -147,6 +153,9 @@ void SaveSettings() {
     fprintf(file, "hudColorIndex=%d\n", engine->hudColorIndex);
     fprintf(file, "crosshairColorIndex=%d\n", engine->crosshairColorIndex);
     fprintf(file, "mapIndex=%d\n", engine->mapIndex);
+    fprintf(file, "maxFPS=%d\n", engine->maxFPS);
+    fprintf(file, "currentFpsIndex=%d\n", engine->currentFpsIndex);
+
 
 
     fclose(file);
