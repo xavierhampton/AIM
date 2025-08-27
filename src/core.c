@@ -36,7 +36,7 @@ int main(void)
     SetTraceLogLevel(LOG_DEBUG); 
     SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     SetConfigFlags(FLAG_MSAA_4X_HINT); 
-    InitWindow(screenWidth, screenHeight, "raylib game template");
+    InitWindow(screenWidth, screenHeight, "AIM");
     
     InitAudioDevice();      // Initialize audio device
 

@@ -1,8 +1,8 @@
-sensitivity=0.20
-volume=0.10
-colorIndex=0
-hudColorIndex=3
+sensitivity=0.84
+volume=0.25
+colorIndex=1
+hudColorIndex=6
 crosshairColorIndex=7
-mapIndex=0
+mapIndex=4
 maxFPS=300
 currentFpsIndex=6
