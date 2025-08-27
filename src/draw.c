@@ -238,6 +238,7 @@ void DrawSettingsMenu(void)
     DrawText("Mouse Sensitivity", centerX - MeasureText("Mouse Sensitivity", 20)/2, sensY, 20, RAYWHITE);
     GuiSliderBar((Rectangle){centerX - controlWidth/2, sensY + 30, controlWidth, controlHeight},
                  NULL, TextFormat("%.2f", gameEngine.sensitivity), &gameEngine.sensitivity, 0.1f, 3.0f);
+                 
 
 
     // -------------------- GUI DROP DOWN INI

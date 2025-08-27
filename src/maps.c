@@ -79,10 +79,68 @@ void Track(void)
     } 
 
 //----------------------------------------------------------------------------------
-// X Shot
+// FLOAT Shot
 //----------------------------------------------------------------------------------
 
+void Floatshot() {
+    int n = targetEngine.targetCount;
+    float speed = targetEngine.targetSpeed / 10;
+    float xVar = targetEngine.xVar / 10;
+    float yVar = targetEngine.yVar / 10;
+    float delta = GetFrameTime();
 
+    for (int i = 0; i < n; i++)
+    {
+        if (targets[i].health <= 0)
+        {
+                //Attempt to create Target (maxFreq = 50)
+                int x = (rand() % (targetEngine.xVar / 10)) - (int)(targetEngine.xVar / (2 * targetEngine.gap));
+                int y = (rand() % (targetEngine.yVar / 10)) + 1;
+                int z = targetEngine.maxZ / 10;
+
+                Vector3 pos = {x,y,z};
+
+                if (!checkInterference(pos)) {
+                    Target newTarget = {pos, targetEngine.targetHealth};
+                    targets[i] = newTarget;
+                    adjVelos[i] = (Vector3){0,0,0};
+                    break;
+                }
+        }
+
+        //If Velocity less than 0.1 (basically non-existent), assign a velocity
+        if (Vector3Length(adjVelos[i]) < 0.1)
+        {
+            adjVelos[i] = (Vector3){(float)(rand() % 3), (float)(rand() % 3), 0.0 };
+
+            if (rand() % 2 == 0) {
+                adjVelos[i].x = -adjVelos[i].x;
+            }
+             if (rand() % 2 == 0) {
+                adjVelos[i].y = -adjVelos[i].y;
+            }
+
+            adjVelos[i] = Vector3Normalize(adjVelos[i]);
+            adjVelos[i] = Vector3Scale(adjVelos[i], 2.0);
+        }
+
+        //Bounce off of boundaries
+        if ((targets[i].position.x > xVar) || (targets[i].position.x < -xVar))
+        {
+            adjVelos[i].x = -1 * adjVelos[i].x;
+        }
+
+         if ((targets[i].position.y > yVar) || (targets[i].position.y < -yVar))
+        {
+            adjVelos[i].y = -1 * adjVelos[i].y;
+        }
+
+        //MOVE TARGETS BY VELOCITY
+        targets[i].position.x = targets[i].position.x + adjVelos[i].x * delta;
+        targets[i].position.y = targets[i].position.y + adjVelos[i].y * delta;
+        
+    }
+}
 
 
 //----------------------------------------------------------------------------------

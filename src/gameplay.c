@@ -100,6 +100,7 @@ void InitEngine(int x)
     {
         case (GRIDSHOT):  targetEngine.Update = Gridshot; break;
         case (TRACK): targetEngine.Update = Track; break;
+        case (FLOATSHOT): targetEngine.Update = Floatshot; break;
     }
 }
 
@@ -167,7 +168,7 @@ int CheckTargetHit(void)
     {
         int n = targetEngine.targetCount;
 
-        if (targetEngine.mapType == GRIDSHOT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (((targetEngine.mapType == GRIDSHOT) || (targetEngine.mapType == FLOATSHOT)) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             int hitAny = 0;
             for (int i = 0; i < n; i++)

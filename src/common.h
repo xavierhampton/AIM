@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------------------
 typedef enum GameScreen { UNKNOWN = -1, LOGO = 0, GAMEPLAY } GameScreen;
 enum MENU { MAIN, PAUSE, SETTINGS };
-enum MapTypes {GRIDSHOT = 0, TRACK};
+enum MapTypes {GRIDSHOT = 0, TRACK, FLOATSHOT};
 
 typedef struct target {
     Vector3 position;
@@ -75,6 +75,7 @@ extern Sound fxCoin;
 extern Sound gunShot;
 
 extern TargetEngine engines[MAX_ENGINES];
+extern Vector3 adjVelos[MAX_ENGINES];
 
 extern int menu;
 extern int engineCount;
@@ -120,6 +121,7 @@ void UpdateGlobals(void);
 //maps
 void Gridshot(void);
 void Track(void);
+void Floatshot(void);
 
 
 
