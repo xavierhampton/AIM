@@ -482,6 +482,16 @@ void UpdateGlobals(void)
 {
     centerX = GetScreenWidth() / 2;
     centerY = GetScreenHeight() / 2;
+
+    //UPDATE EVERY 1 SECOND
+    static float cumTime = 0;
+    cumTime += GetFrameTime();
+    if (cumTime > 1.0)
+    {
+        cumTime = 0.0;
+         SetSoundVolume(fxCoin, gameEngine.volume);
+        SetSoundVolume(gunShot, gameEngine.volume);
+    }
 }
 
 void InitTheme(const char *theme)
@@ -524,8 +534,12 @@ static bool animPlaying = false;
 
 void AnimateGun(void)
 {
-    static float animSpeed = 12.0f;
+    static float animSpeed = 18.0f;
     static int dir = 1;
+    if (gameEngine.shots == 0)
+    {
+        oldShots = 0;
+    }
     if (gameEngine.shots > oldShots)
     {
         yawOffset = 0;
