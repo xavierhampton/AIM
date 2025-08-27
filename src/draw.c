@@ -35,6 +35,13 @@ void DrawGun(void);
 void InitDraw(void) {
     skybox = LoadModel("resources/models/skybox.glb");
     gun = LoadModel("resources/models/pistol.glb");
+
+    // Apply tint to gun
+    Color c = targetColors[gameEngine.hudColorIndex];
+    for (int i = 0; i < gun.materialCount; i++) {
+        gun.materials[i].maps[MATERIAL_MAP_DIFFUSE].color = (Color){c.r, c.g, c.b, 75}; // light green tint
+    }
+
     assert(skybox.meshCount > 0);
 
 }
@@ -297,12 +304,24 @@ void DrawSettingsMenu(void)
         if (gameEngine.hudColorIndex < 0) gameEngine.hudColorIndex = 7;
         InitTheme("DARK");
 
+          // Apply tint to gun
+        Color c = targetColors[gameEngine.hudColorIndex];
+        for (int i = 0; i < gun.materialCount; i++) {
+        gun.materials[i].maps[MATERIAL_MAP_DIFFUSE].color = (Color){c.r, c.g, c.b, 75}; // light green tint
+    }
+
     }
     if (GuiButton((Rectangle){centerX + controlWidth / 2 + 10, hudColorY + 30, 40, controlHeight}, ">"))
     {
         gameEngine.hudColorIndex++;
         if (gameEngine.hudColorIndex > 7) gameEngine.hudColorIndex = 0;
         InitTheme("DARK");
+
+        // Apply tint to gun
+        Color c = targetColors[gameEngine.hudColorIndex];
+        for (int i = 0; i < gun.materialCount; i++) {
+        gun.materials[i].maps[MATERIAL_MAP_DIFFUSE].color = (Color){c.r, c.g, c.b, 75}; // light green tint
+    }
 
     }
 
@@ -534,7 +553,7 @@ static bool animPlaying = false;
 
 void AnimateGun(void)
 {
-    static float animSpeed = 18.0f;
+    static float animSpeed = 6.0f;
     static int dir = 1;
     if (gameEngine.shots == 0)
     {
@@ -545,7 +564,7 @@ void AnimateGun(void)
         yawOffset = 0;
         dir = 1;
         animPlaying = true;
-        animSpeed = 5.0;
+        animSpeed = 6.0;
         oldShots = gameEngine.shots;
         PlaySound(gunShot);
     }
@@ -574,20 +593,20 @@ void DrawGun(void) {
         Vector3 up      = gameEngine.camera.up;
         Vector3 gunOffset = Vector3Add(
             Vector3Add(
-                Vector3Scale(right, 0.5f),   // move right
+                Vector3Scale(right, 0.65f),   // move right
                 Vector3Scale(up, -0.35f)      // move down
             ),
-            Vector3Scale(forward, 0.3f)      // move forward
+            Vector3Scale(forward, 1.0f)      // move forward
         );
 
         AnimateGun();
         Vector3 gunPos = Vector3Add(gameEngine.camera.position, gunOffset);
 
-        Quaternion gunRot = QuaternionFromEuler(-pitch + PI/2  - yawOffset, yaw, 0.0f);
+        Quaternion gunRot = QuaternionFromEuler(pitch + yawOffset , yaw - PI , 0.0f);
         gun.transform = QuaternionToMatrix(gunRot);
             DrawModelEx(gun, gunPos,
                         (Vector3){0,1,0}, 0.0,     // yaw around Y
-                        (Vector3){1.3,1.3,1.3}, WHITE);
+                        (Vector3){0.003,0.003,0.003}, WHITE);
 
 }
 
