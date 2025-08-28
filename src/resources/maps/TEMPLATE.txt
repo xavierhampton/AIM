@@ -27,3 +27,15 @@ targetCount=1
 xVar=30
 yVar=30
 maxZ=50
+
+//FLOAT SHOT
+//////////////////
+
+title=XXX
+mapType=1
+targetSize=0.00
+targetCount=1
+
+xVar=30
+yVar=30
+maxZ=50
