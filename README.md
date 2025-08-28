@@ -12,11 +12,19 @@ Plus, it offers an **extremely customizable color scheme** for targets, crosshai
 
 ---
 
-##  Demo / Example Images
+##  Demos
 
-<img src="https://github.com/xavierhampton/AIM/blob/main/images/MapsDemo.gif" />
-<img src="https://github.com/xavierhampton/AIM/blob/main/images/colors.png" />
+**Gameplay (Gridshot / Floatshot / Tracking)**  
+----
+<img src="https://github.com/xavierhampton/AIM/blob/main/images/MapsDemo.gif"/>
 
+**Settings Menu (Color customization + Map selection)**  
+----
+<img src="https://github.com/xavierhampton/AIM/blob/main/images/SettingsDemo.gif"/>
+
+ **Color Variety (Examples of unique player-tailored color schemes)**  
+ ----
+<img src="https://github.com/xavierhampton/AIM/blob/main/images/colors.png"/>
 
 
 ---
