@@ -14,6 +14,9 @@ Plus, it offers an **extremely customizable color scheme** for targets, crosshai
 
 ##  Demo / Example Images
 
+<img src="https://github.com/xavierhampton/AIM/blob/main/images/MapsDemo.gif" />
+<img src="https://github.com/xavierhampton/AIM/blob/main/images/colors.png" />
+
 
 
 ---
