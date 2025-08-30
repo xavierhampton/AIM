@@ -68,6 +68,11 @@ This system allows endless combinations of challenges and keeps your practice fr
 
 ---
 
+## To Do
+- Make build instructions work with convention
+- Raw Polling for Mouse
+- Optimize Drawing Further?
+
 ## 🛠️ Build & Run
 
 ### Prerequisites
