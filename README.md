@@ -69,9 +69,9 @@ This system allows endless combinations of challenges and keeps your practice fr
 ---
 
 ## To Do
-- Make build instructions work with convention
+- Easier building?
 - Raw Polling for Mouse
-- Optimize Drawing Further?
+- Optimize Drawing with caching?
 
 ## 🛠️ Build & Run
 
@@ -83,8 +83,10 @@ This system allows endless combinations of challenges and keeps your practice fr
 
 ### Build Instructions
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/AIM.git
+# Clone raylib
+git clone git@github.com:raysan5/raylib.git
+# Clone the repository within the same folder
+git clone https://github.com/xavierhampton/AIM.git
 cd AIM
 
 # Create build directory
