@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(raylib-game-template)
+project(aim)
 
 include(FetchContent)
 
@@ -7,7 +7,7 @@ include(FetchContent)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Dependencies
-set(RAYLIB_VERSION 5.0)
+set(RAYLIB_VERSION 5.5)
 
 FetchContent_Declare(
     raylib
