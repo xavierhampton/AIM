@@ -92,9 +92,17 @@ cd AIM
 # Create build directory
 mkdir build && cd build
 
-# Run CMake
-cmake ..
-make
+```
+#### Run CMake
 
+| Platform          | Command                                                                 |
+|-------------------|-------------------------------------------------------------------------|
+| Linux / macOS     | ```cmake ..```<br> ```make```                                          |
+| Windows (MinGW)   | ```cmake -G "MinGW Makefiles" ..```<br> ```cmake --build .```          |
+
+
+
+
+```bash
 # Run the game
 ./aim
