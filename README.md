@@ -77,15 +77,13 @@ This system allows endless combinations of challenges and keeps your practice fr
 
 ### Prerequisites
 - **C compiler** (GCC, Clang, or MSVC)
-- **raylib** installed (v5.0+, same directory as project)  
 - **CMake** 
 
 
 ### Build Instructions
 ```bash
-# Clone raylib
-git clone git@github.com:raysan5/raylib.git
-# Clone the repository within the same folder
+
+# Clone the repository
 git clone https://github.com/xavierhampton/AIM.git
 cd AIM
 
