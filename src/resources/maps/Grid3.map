@@ -1,0 +1,9 @@
+title=Micro_2_Shot
+mapType=0
+targetSize=0.3
+targetCount=2
+targetHealth=1
+gap=20
+xVar=80
+yVar=40
+maxZ=300

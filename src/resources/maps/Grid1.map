@@ -1,0 +1,9 @@
+title=3x3_Gridshot
+mapType=0
+targetSize=0.45
+targetCount=3
+targetHealth=1
+gap=10
+xVar=30
+yVar=30
+maxZ=50

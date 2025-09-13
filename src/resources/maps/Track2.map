@@ -1,0 +1,8 @@
+title=Head_Track_Hard
+mapType=1
+targetSize=0.35
+targetCount=1
+targetSpeed=80
+xVar=60
+yVar=10
+maxZ=70

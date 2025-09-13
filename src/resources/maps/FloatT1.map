@@ -1,0 +1,10 @@
+title=Float_Track_Normal
+mapType=2
+targetSpeed=30
+targetSize=0.45
+targetCount=3
+targetHealth=1
+gap=10
+xVar=120
+yVar=40
+maxZ=155
