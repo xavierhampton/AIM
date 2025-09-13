@@ -69,30 +69,38 @@ This system allows endless combinations of challenges and keeps your practice fr
 ---
 
 ## To Do
-- Make build instructions work with convention
+- Easier building?
 - Raw Polling for Mouse
-- Optimize Drawing Further?
+- Optimize Drawing with caching?
 
 ## 🛠️ Build & Run
 
 ### Prerequisites
 - **C compiler** (GCC, Clang, or MSVC)
-- **raylib** installed (v5.0+, same directory as project)  
 - **CMake** 
 
 
 ### Build Instructions
 ```bash
+
 # Clone the repository
-git clone https://github.com/yourusername/AIM.git
+git clone https://github.com/xavierhampton/AIM.git
 cd AIM
 
 # Create build directory
 mkdir build && cd build
 
-# Run CMake
-cmake ..
-make
+```
+#### Run CMake
 
+| Platform          | Command                                                                 |
+|-------------------|-------------------------------------------------------------------------|
+| Linux / macOS     | ```cmake ..```<br> ```make```                                          |
+| Windows (MinGW)   | ```cmake -G "MinGW Makefiles" ..```<br> ```cmake --build .```          |
+
+
+
+
+```bash
 # Run the game
 ./aim
