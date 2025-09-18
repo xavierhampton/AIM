@@ -30,15 +30,15 @@ It’s designed for **pure aim practice** without distractions
 
 **Gameplay**  
 ----
-<img src="https://github.com/xavierhampton/AIM/blob/main/images/MapsDemo.gif"/>
+<img src="https://github.com/xavierhampton/aim/blob/main/images/MapsDemo.gif"/>
 
 **Settings**  
 ----
-<img src="https://github.com/xavierhampton/AIM/blob/main/images/SettingsDemo.gif"/>
+<img src="https://github.com/xavierhampton/aim/blob/main/images/SettingsDemo.gif"/>
 
  **Color Variety**  
  ----
-<img src="https://github.com/xavierhampton/AIM/blob/main/images/colors.png"/>
+<img src="https://github.com/xavierhampton/aim/blob/main/images/colors.png"/>
 
 
 
